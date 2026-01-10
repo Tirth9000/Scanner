@@ -6,7 +6,7 @@ import (
 	"net"
 
 
-	"scanner-platform/scanner/core"
+	"scanner-platform/scanner-engine/core"
 )
 
 type DNSFilterTest struct {}

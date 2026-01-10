@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"regexp"
 
-	"scanner-platform/scanner/core"
+	"scanner-platform/scanner-engine/core"
 )
 
 

@@ -3,7 +3,7 @@ package discovery
 import (
 	"context"
 	"net"
-	"scanner-platform/scanner/core"
+	"scanner-platform/scanner-engine/core"
 	"time"
 )
 

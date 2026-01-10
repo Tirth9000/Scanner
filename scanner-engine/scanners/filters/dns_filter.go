@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"scanner-platform/scanner/core"
+	"scanner-platform/scanner-engine/core"
 )
 
 type DNSFilter struct{}

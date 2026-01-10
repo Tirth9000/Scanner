@@ -8,7 +8,7 @@ import (
 	"time"
 	"net/http"
 
-	"scanner-platform/scanner/core"
+	"scanner-platform/scanner-engine/core"
 )
 
 type CertSpotterCTScanner struct{}
