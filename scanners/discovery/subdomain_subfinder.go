@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"scanner/core"
+	"scanner-platform/scanner/core"
 )
 
 type SubdomainSubFinderScanner struct{}

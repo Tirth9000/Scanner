@@ -9,7 +9,7 @@ import (
 	"encoding/json"
 	"time"
 
-	"scanner/core"
+	"scanner-platform/scanner/core"
 )
 
 

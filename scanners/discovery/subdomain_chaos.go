@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"os"
 
-	"scanner/core"
+	"scanner-platform/scanner/core"
 )
 
 type SubdomainChaosScanner struct{}

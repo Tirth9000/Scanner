@@ -1,4 +1,4 @@
-package filters
+package collection
 
 import (
 	"bufio"
@@ -8,7 +8,7 @@ import (
 	"os/exec"
 	"time"
 
-	"scanner/core"
+	"scanner-platform/scanner/core"
 )
 
 type PortFilter struct{}

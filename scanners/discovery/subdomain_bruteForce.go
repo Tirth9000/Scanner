@@ -6,7 +6,7 @@ import (
 	"net"
 	"time"
 
-	"scanner/core"
+	"scanner-platform/scanner/core"
 )
 
 type SubdomainBruteforceScanner struct{}

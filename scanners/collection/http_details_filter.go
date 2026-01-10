@@ -1,17 +1,17 @@
-package filters
+package collection
 
 import (
 	"bufio"
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/url"
+	"os"
 	"os/exec"
 	"time"
-	"os"
-	"io"
 
-	"scanner/core"
+	"scanner-platform/scanner/core"
 )
 
 type HTTPXFilterOutput struct{}
@@ -95,7 +95,7 @@ func (f *HTTPXFilterOutput) RunFilterScanner(
 	var results []core.Result
 
 	scanner := bufio.NewScanner(stdout)
-	scanner.Buffer(make([]byte, 1024), 1024*1024) 
+	scanner.Buffer(make([]byte, 1024), 1024*1024)
 
 	for scanner.Scan() {
 		var hx struct {
