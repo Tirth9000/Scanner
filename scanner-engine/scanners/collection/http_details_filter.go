@@ -92,7 +92,7 @@ func (f *HTTPXFilterOutput) RunFilterScanner(
 		io.Copy(os.Stderr, stderr)
 	}()
 
-	var results []core.Result
+	var httpData []core.Result
 
 	scanner := bufio.NewScanner(stdout)
 	scanner.Buffer(make([]byte, 1024), 1024*1024)
@@ -139,23 +139,26 @@ func (f *HTTPXFilterOutput) RunFilterScanner(
 		data.Metadata.ContentLength = hx.ContentLength
 		data.Metadata.ResponseTimeMs = hx.Time
 
-		results = append(results, core.Result{
-			Scanner:   "httpx",
-			Category:  "http",
+		httpData = append(httpData, core.Result{
+			Scanner:   f.Name(),
+			Category:  f.Category(),
 			Target:    target,
-			Data:      data,
+			Data:      map[string]any{
+				"subdomain": hx.URL,
+				"http_data" : data,
+			},
 			Severity:  "info",
 			Timestamp: time.Now(),
 		})
 	}
 
 	if err := scanner.Err(); err != nil {
-		return results, err
+		return httpData, err
 	}
 
 	if err := cmd.Wait(); err != nil {
-		return results, err
+		return httpData, err
 	}
 
-	return results, nil
+	return httpData, nil
 }

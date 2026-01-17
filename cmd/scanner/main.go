@@ -1,4 +1,4 @@
-package scanner
+package main
 
 import (
 	"context"
@@ -39,6 +39,7 @@ func main() {
 	filter_registry.RegisterFilterScanner(filters.NewHTTPFilter())
 	filter_registry.RegisterFilterScanner(collection.NewHTTPXFilterOutput())
 	filter_registry.RegisterFilterScanner(collection.NewPortFilter())
+	filter_registry.RegisterFilterScanner(collection.NewTLSDataCollection())
 	// filter_registry.RegisterFilterScanner(filters.NEWDNSTEST()) // test dns
 
 	filter_pipeline := core.NewFilterPipeline(filter_registry)
@@ -52,7 +53,6 @@ func main() {
 
 	for _, r := range filtered_results {
 		fmt.Printf("%+v\n", r)
-	}
-	
+	}	
 	fmt.Println(len(filtered_results))
 }

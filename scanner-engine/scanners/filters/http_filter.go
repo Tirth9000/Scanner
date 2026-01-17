@@ -83,11 +83,10 @@ func (f *HTTPFilter) RunFilterScanner(
 
 		// httpx already filters liveness — this is just safety
 		if hx.URL != "" && (hx.StatusCode == 200 || hx.StatusCode == 301 || hx.StatusCode == 302) {
-			fmt.Println(hx.URL)
 
 			live = append(live, core.Result{
-				Scanner:  "HTTPX Filter",
-				Category: "discovery",
+				Scanner:  f.Name(),
+				Category: f.Category(),
 				Target:   domain,
 				Data: map[string]string{
 					"subdomain": hx.URL,
@@ -102,6 +101,5 @@ func (f *HTTPFilter) RunFilterScanner(
 		return live, err
 	}
 
-	fmt.Println("HTTPX Filter - Live subdomains found:", len(live))
 	return live, nil
 }
