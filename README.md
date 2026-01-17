@@ -26,25 +26,28 @@ Ensure the following are installed:
 
 ```bash
 brew install go
+```
 
 Verify:
 
+```bash
 go version
+```
 
 Official installer (optional):
-https://go.dev/dl/
+<https://go.dev/dl/>
 
-⸻
+## Windows
 
-Windows
- 1. Download Go from:
-https://go.dev/dl/
- 2. Install and restart terminal
+1. Download Go from:
+<https://go.dev/dl/>
+2. Install and restart terminal
 
 ## Verify Go Installation
 
 ```bash
 go version
+```
 
 ## Step 3: Install Scanner Dependencies
 
@@ -64,16 +67,17 @@ go install github.com/projectdiscovery/dnsx/cmd/dnsx@latest
 go install github.com/projectdiscovery/naabu/v2/cmd/naabu@latest
 go install github.com/projectdiscovery/httpx/cmd/httpx@latest
 go install github.com/projectdiscovery/tlsx/cmd/tlsx@latest
-
+```
 
 ## Step 4: Add Go Binaries to PATH
 
-### macOS
+## macOS
 
 Temporarily add Go binaries to your PATH:
 
 ```bash
 export PATH=$PATH:$(go env GOPATH)/bin
+```
 
 Make this change permanent by adding it to your shell configuration:
 
@@ -82,20 +86,20 @@ echo 'export PATH=$PATH:$(go env GOPATH)/bin' >> ~/.zshrc
 source ~/.zshrc
 ```
 
-### Windows
+## Windows
 
 1. **Get your GOPATH**:
 
 ```powershell
 go env GOPATH
+```
 
- 2. Add the Go bin directory to your system PATH:
+ 1. Add the Go bin directory to your system PATH:
 
 C:\Users\<your-username>\go\bin
 
  • Open Environment Variables → Path → Edit → Add New
  • Paste the above path and save
-
 
 ## Step 5: Verify Dependencies
 
@@ -107,7 +111,7 @@ dnsx -h
 naabu -h
 httpx -h
 tlsx -h
-
+```
 
 ## Step 6: Clone the Scanner Repository
 
@@ -116,7 +120,7 @@ Clone the scanner repository and navigate into the project directory:
 ```bash
 git clone <scanner-repository-url>
 cd scanner
-
+```
 
 ## Step 7: Run the Scanner (Test Mode)
 
@@ -126,8 +130,7 @@ Run the scanner directly using:
 
 ```bash
 go run cmd/scanner/main.go
-
-
+```
 
 ## Example Test Run
 
@@ -135,7 +138,7 @@ Run the scanner against a sample domain:
 
 ```bash
 go run cmd/scanner/main.go example.com
-
+```
 
 ## Important Notes
 
