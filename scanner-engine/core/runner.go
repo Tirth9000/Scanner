@@ -24,3 +24,11 @@ func (r *Runner) RunFilterScanners(ctx context.Context,
 ) ([] Result, error){
 	return scanner.RunFilterScanner(ctx, subdomains, domain)
 }
+
+func (r *Runner) RunCollectionScanners(ctx context.Context, 
+	scanner CollectionScanners,
+	subdomains []Result,
+	domain string,
+) ([] Result, error) {
+	return scanner.RunCollectionScanner(ctx, subdomains, domain)
+}

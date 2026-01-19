@@ -16,7 +16,6 @@ func (r *Registry) All() []Scanner {
 	return r.scanners
 }
 
-
 type FilterScannerRegistry struct {
 	filterscanners []FilterScanner
 }
@@ -37,5 +36,18 @@ func (r *FilterScannerRegistry) All() []FilterScanner {
 	return r.filterscanners
 }
 
+type CollectionScannerRegistry struct {
+	CollectionScanners []CollectionScanners
+}
 
+func NewCollectionRegistry() *CollectionScannerRegistry {
+	return &CollectionScannerRegistry{}
+}
 
+func (r *CollectionScannerRegistry) RegisterCollectionScanner(scanner CollectionScanners) {
+	r.CollectionScanners = append(r.CollectionScanners, scanner)
+}
+
+func (r *CollectionScannerRegistry) All() []CollectionScanners {
+	return r.CollectionScanners
+}

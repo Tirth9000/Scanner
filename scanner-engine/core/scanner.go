@@ -13,3 +13,9 @@ type FilterScanner interface {
 	Category() string
 	RunFilterScanner(ctx context.Context, subdomains []Result, domain string) ([]Result, error)
 }
+
+type CollectionScanners interface{
+	Name() string
+	Category() string
+	RunCollectionScanner(ctx context.Context, subdomains []Result, domain string) ([]Result, error)
+}

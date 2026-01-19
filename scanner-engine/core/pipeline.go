@@ -10,20 +10,8 @@ type Pipeline struct {
 	runner *Runner
 }
 
-type FilterScannerPipeline struct {
-	registry *FilterScannerRegistry
-	runner *Runner
-}
-
 func NewPipeline(registry *Registry) *Pipeline {
 	return &Pipeline{
-		registry: registry,
-		runner: NewRunner(),
-	}
-}
-
-func NewFilterPipeline(registry *FilterScannerRegistry) *FilterScannerPipeline {
-	return &FilterScannerPipeline{
 		registry: registry,
 		runner: NewRunner(),
 	}
@@ -48,6 +36,19 @@ func (p *Pipeline) Execute(ctx context.Context, target string) ([]Result, error)
 	return results, nil
 }
 
+
+type FilterScannerPipeline struct {
+	registry *FilterScannerRegistry
+	runner *Runner
+}
+
+func NewFilterPipeline(registry *FilterScannerRegistry) *FilterScannerPipeline {
+	return &FilterScannerPipeline{
+		registry: registry,
+		runner: NewRunner(),
+	}
+}
+
 func (p *FilterScannerPipeline) ExecuteFilterScanners(ctx context.Context, subdomains []Result, domain string) ([]Result, error) {
 
 	for _, scanner := range p.registry.All() {
@@ -61,4 +62,31 @@ func (p *FilterScannerPipeline) ExecuteFilterScanners(ctx context.Context, subdo
 	}
 	
 	return subdomains, nil
+}
+
+
+type CollectionPipeline struct {
+	registry *CollectionScannerRegistry
+	runner *Runner
+}
+
+func NewCollectionPipeline(registry *CollectionScannerRegistry) *CollectionPipeline {
+	return &CollectionPipeline{
+		registry: registry,
+		runner: NewRunner(),
+	}
+}
+
+func (c *CollectionPipeline) ExecuteCollectionScanenrs(ctx context.Context, data_collected []Result, domain string) ([]Result, error) {
+	for _, scanner := range c.registry.All() {
+		fmt.Println("Running collection scanner:", scanner.Name())
+		res, err := c.runner.RunCollectionScanners(ctx, scanner, data_collected, domain)
+		if err != nil {
+			fmt.Println("Collection scanner error:", scanner.Name(), err)
+		}
+
+		data_collected = res
+	}
+
+	return data_collected, nil
 }

@@ -36,7 +36,7 @@ func extractHost(raw string) string {
 	return u.Hostname()
 }
 
-func (f *HTTPXFilterOutput) RunFilterScanner(
+func (f *HTTPXFilterOutput) RunCollectionScanner(
 	ctx context.Context,
 	subdomains []core.Result,
 	target string,
@@ -68,7 +68,6 @@ func (f *HTTPXFilterOutput) RunFilterScanner(
 		return nil, err
 	}
 
-	// ---- Feed subdomains to httpx ----
 	go func() {
 		defer stdin.Close()
 
@@ -87,7 +86,6 @@ func (f *HTTPXFilterOutput) RunFilterScanner(
 		}
 	}()
 
-	// ---- Log stderr (optional but useful) ----
 	go func() {
 		io.Copy(os.Stderr, stderr)
 	}()
@@ -144,7 +142,7 @@ func (f *HTTPXFilterOutput) RunFilterScanner(
 			Category:  f.Category(),
 			Target:    target,
 			Data:      map[string]any{
-				"subdomain": hx.URL,
+				"subdomain": hx.Host,
 				"http_data" : data,
 			},
 			Severity:  "info",
@@ -159,6 +157,7 @@ func (f *HTTPXFilterOutput) RunFilterScanner(
 	if err := cmd.Wait(); err != nil {
 		return httpData, err
 	}
+	fmt.Printf("%+v\n", httpData[0])
 
 	return httpData, nil
 }

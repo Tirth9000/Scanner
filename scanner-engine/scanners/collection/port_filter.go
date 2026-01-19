@@ -24,7 +24,7 @@ func (f *PortFilter) Category() string {
 	return "FilterScanner"
 }
 
-func (f *PortFilter) RunFilterScanner(
+func (f *PortFilter) RunCollectionScanner(
 	ctx context.Context,
 	results []core.Result,
 	domain string,
@@ -67,6 +67,7 @@ func (f *PortFilter) RunFilterScanner(
 
 	go func() {
 		defer stdin.Close()
+		fmt.Println(results[0].Data.(map[string]any)["subdomain"])
 
 		for _, r := range results {
 			data, ok := r.Data.(map[string]any)
@@ -75,6 +76,7 @@ func (f *PortFilter) RunFilterScanner(
 			}
 
 			sub := data["subdomain"].(string)
+
 			if sub == "" {
 				continue
 			}
@@ -85,8 +87,6 @@ func (f *PortFilter) RunFilterScanner(
 
 	scanner := bufio.NewScanner(stdout)
 	scanner.Buffer(make([]byte, 1024), 1024*1024)
-
-	
 
 	portMap := make(map[string][]core.PortData)
 
@@ -117,12 +117,11 @@ func (f *PortFilter) RunFilterScanner(
 
 		ports, exists := portMap[sub]
 		if !exists {
-			continue 
+			continue
 		}
 
 		data["ports"] = ports
 	}
-
 
 	return results, nil
 }

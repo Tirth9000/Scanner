@@ -25,7 +25,7 @@ func (f *TLSDataCollection) Category() string {
 	return "Collection"
 }
 
-func (f *TLSDataCollection) RunFilterScanner(
+func (f *TLSDataCollection) RunCollectionScanner(
 	ctx context.Context,
 	results []core.Result,
 	domain string,
