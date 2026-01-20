@@ -14,6 +14,9 @@ func main() {
 	ctx := context.Background()
 	domain_name := "allianzcloud.com"
 
+	fmt.Println("Starting scanning for domain:", domain_name)
+	fmt.Println("Scanner 1 : Subdomain Discovery")
+
 	registry := core.NewRegistry()
 
 	registry.Register(discovery.NewDNSScanner())
@@ -30,7 +33,9 @@ func main() {
 		panic(err)
 	}
 
-	fmt.Println("pipeline 1 : find subdomains : ", len(results))
+	fmt.Println("Total Subdomains Found:", len(results))
+
+	fmt.Println("Scanner 2 : Subdomain Filter")
 
 	filter_registry := core.NewFilterScannerRegistry()
 
@@ -47,9 +52,9 @@ func main() {
 		panic(err)
 	}
 
-	fmt.Println("pipeline 2 : filter subdomain : ", len(filtered_results))
-	// fmt.Println(filtered_results[0])
+	fmt.Println("Total Filtered Subdomains Found:", len(filtered_results))
 
+	fmt.Println("Scanner 3 : Data Collection")
 
 	collection_registry := core.NewCollectionRegistry()
 
@@ -63,7 +68,10 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+
+	fmt.Println("Final Results:")
 	for _, r := range collection_pipeline_results {
 		fmt.Printf("%+v\n", r)
 	}
+	fmt.Println("Total Results Found:", len(collection_pipeline_results))
 }

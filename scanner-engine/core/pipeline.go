@@ -20,7 +20,7 @@ func NewPipeline(registry *Registry) *Pipeline {
 func (p *Pipeline) Execute(ctx context.Context, target string) ([]Result, error) {
 	var results []Result
 
-	fmt.Println("Starting pipeline for target:", target)
+	fmt.Println("Starting discovery pipeline for target:", target)
 
 	for _, scanner := range p.registry.All() {
 		fmt.Println("Running scanner:", scanner.Name())
@@ -31,6 +31,7 @@ func (p *Pipeline) Execute(ctx context.Context, target string) ([]Result, error)
 		}
 		results = append(results, res...)
 		fmt.Println("Completed scanner:", scanner.Name())
+		fmt.Println("Total results so far:", len(results))
 	}
 
 	return results, nil
@@ -50,13 +51,17 @@ func NewFilterPipeline(registry *FilterScannerRegistry) *FilterScannerPipeline {
 }
 
 func (p *FilterScannerPipeline) ExecuteFilterScanners(ctx context.Context, subdomains []Result, domain string) ([]Result, error) {
+	fmt.Println("Starting filter pipeline for domain:", domain)
 
 	for _, scanner := range p.registry.All() {
 		fmt.Println("Running filter scanner:", scanner.Name())
 		res, err := p.runner.RunFilterScanners(ctx, scanner, subdomains, domain)
 		if err != nil {
 			fmt.Println("Filter scanner error:", scanner.Name(), err)
+			continue
 		}
+		fmt.Println("Completed filter scanner:", scanner.Name())
+		fmt.Println("Total subdomains so far:", len(res))
 		
 		subdomains = res
 	}
@@ -78,6 +83,8 @@ func NewCollectionPipeline(registry *CollectionScannerRegistry) *CollectionPipel
 }
 
 func (c *CollectionPipeline) ExecuteCollectionScanenrs(ctx context.Context, data_collected []Result, domain string) ([]Result, error) {
+	fmt.Println("Starting collection pipeline for domain:", domain)
+
 	for _, scanner := range c.registry.All() {
 		fmt.Println("Running collection scanner:", scanner.Name())
 		res, err := c.runner.RunCollectionScanners(ctx, scanner, data_collected, domain)
@@ -85,8 +92,11 @@ func (c *CollectionPipeline) ExecuteCollectionScanenrs(ctx context.Context, data
 			fmt.Println("Collection scanner error:", scanner.Name(), err)
 		}
 
+		fmt.Println("Completed collection scanner:", scanner.Name())
+		
 		data_collected = res
 	}
+	fmt.Println("Total data collected so far:", len(data_collected))
 
 	return data_collected, nil
 }

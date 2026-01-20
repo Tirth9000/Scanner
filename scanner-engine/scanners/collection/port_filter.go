@@ -67,7 +67,6 @@ func (f *PortFilter) RunCollectionScanner(
 
 	go func() {
 		defer stdin.Close()
-		fmt.Println(results[0].Data.(map[string]any)["subdomain"])
 
 		for _, r := range results {
 			data, ok := r.Data.(map[string]any)

@@ -1,7 +1,6 @@
 package discovery
 
 import (
-	"fmt"
     "context"
     "encoding/json"
     "net/http"
@@ -80,7 +79,6 @@ func (c *CrtCTScanner) Run(ctx context.Context, domain string) ([]core.Result, e
             })
         }
     }
-	fmt.Println(len(results))
 
     return results, nil
 }

@@ -4,7 +4,6 @@ package filters
 import (
 	"context"
 	"strings"
-	"fmt"
 	"regexp"
 
 	"scanner-platform/scanner-engine/core"
@@ -110,7 +109,6 @@ func (d *DedupFilter) RunFilterScanner(
         output = append(output, sub)
     }
 
-	fmt.Println(len(output))
 
     return output, nil
 }

@@ -95,6 +95,5 @@ func (c *CertSpotterCTScanner) Run(ctx context.Context, domain string) ([]core.R
 		}
 	}
 
-	fmt.Println(len(results))
 	return results, nil
 }

@@ -95,7 +95,5 @@ func (f *DNSFilter) RunFilterScanner(ctx context.Context, results []core.Result,
 		return nil, err
 	}
 
-	fmt.Println("DNSFilter resolved count:", len(resolved))
-
 	return resolved, nil
 }

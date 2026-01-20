@@ -157,7 +157,6 @@ func (f *HTTPXFilterOutput) RunCollectionScanner(
 	if err := cmd.Wait(); err != nil {
 		return httpData, err
 	}
-	fmt.Printf("%+v\n", httpData[0])
 
 	return httpData, nil
 }
