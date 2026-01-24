@@ -2,6 +2,7 @@ package discovery
 
 import (
 	"context"
+	"fmt"
 	"net"
 	"scanner-platform/scanner-engine/core"
 	"time"
@@ -51,6 +52,8 @@ func (d *DNSScanner) Run(
 			Timestamp: time.Now(),
 		})
 	}
+
+	fmt.Println(results)
 
 	return results, nil
 }

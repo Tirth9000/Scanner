@@ -10,7 +10,7 @@ import (
 
 func main() {
     ctx := context.Background()
-    q := queue.New("redis:6379")
+    q := queue.New("localhost:6379")
 
     log.Println("Scanner worker started")
 

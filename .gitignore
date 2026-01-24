@@ -1,3 +1,6 @@
 .DS_Store
 .VSCode
 test/
+
+cmd/scanner/resume.cfg
+cmd/worker/resume.cfg
