@@ -33,8 +33,9 @@ func (f *PortFilter) RunCollectionScanner(
 	cmd := exec.CommandContext(
 		ctx,
 		"naabu",
-		"-top-ports", "1000",
-		"-scan-type", "connect",
+		"-top-ports", "100",
+		"-rate", "1500",
+		"-retries", "1",
 		"-silent",
 		"-json",
 	)
