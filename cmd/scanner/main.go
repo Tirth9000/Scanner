@@ -12,7 +12,7 @@ import (
 
 func main() {
 	ctx := context.Background()
-	domain_name := "cloudflare.com"
+	domain_name := "vulnweb.com"
 
 	fmt.Println("Starting scanning for domain:", domain_name)
 	fmt.Println("Scanner 1 : Subdomain Discovery")

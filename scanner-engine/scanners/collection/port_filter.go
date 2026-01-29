@@ -17,7 +17,7 @@ func NewPortFilter() *PortFilter {
 }
 
 func (f *PortFilter) Name() string {
-	return "ProtFilter"
+	return "PortFilter"
 }
 
 func (f *PortFilter) Category() string {
@@ -34,8 +34,9 @@ func (f *PortFilter) RunCollectionScanner(
 		ctx,
 		"naabu",
 		"-top-ports", "100",
-		"-rate", "1500",
-		"-retries", "1",
+		"-rate", "3000",
+		"-retries", "0",
+		"-timeout", "300",
 		"-silent",
 		"-json",
 	)

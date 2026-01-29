@@ -12,6 +12,7 @@ type Result struct {
 }
 
 type HTTPScanData struct {
+	IP         string `json:"ip"`
 	Subdomain  string `json:"subdomain"`
 	URL        string `json:"url"`
 	StatusCode int    `json:"status_code"`
@@ -55,31 +56,31 @@ type NaabuOutput struct {
 }
 
 type TLSDetails struct {
-	Enabled    bool      `json:"enabled"`              
-	Version    string    `json:"version,omitempty"`   
-	Cipher     string    `json:"cipher,omitempty"`     
-	ALPN       string    `json:"alpn,omitempty"`      
-	Issuer     string    `json:"issuer,omitempty"`    
+	Enabled    bool      `json:"enabled"`
+	Version    string    `json:"version,omitempty"`
+	Cipher     string    `json:"cipher,omitempty"`
+	ALPN       string    `json:"alpn,omitempty"`
+	Issuer     string    `json:"issuer,omitempty"`
 	NotBefore  time.Time `json:"not_before,omitempty"`
-	NotAfter   time.Time `json:"not_after,omitempty"`  
-	Expired    bool      `json:"expired"`              
-	SelfSigned bool      `json:"self_signed"`         
-	WeakTLS    bool      `json:"weak_tls"`             
+	NotAfter   time.Time `json:"not_after,omitempty"`
+	Expired    bool      `json:"expired"`
+	SelfSigned bool      `json:"self_signed"`
+	WeakTLS    bool      `json:"weak_tls"`
 }
 
 type TLSXOutput struct {
 	Host       string    `json:"host"`
 	Port       int       `json:"port"`
-	TLS        bool      `json:"tls"`        
-	Version    string    `json:"version"`    
-	Cipher     string    `json:"cipher"`     
-	ALPN       string    `json:"alpn"`       
-	Issuer     string    `json:"issuer"`     
+	TLS        bool      `json:"tls"`
+	Version    string    `json:"version"`
+	Cipher     string    `json:"cipher"`
+	ALPN       string    `json:"alpn"`
+	Issuer     string    `json:"issuer"`
 	NotBefore  time.Time `json:"not_before"`
-	NotAfter   time.Time `json:"not_after"`  
-	Expired    bool      `json:"expired"`    
+	NotAfter   time.Time `json:"not_after"`
+	Expired    bool      `json:"expired"`
 	SelfSigned bool      `json:"self_signed"`
-	WeakTLS    bool      `json:"weak_tls"`   
+	WeakTLS    bool      `json:"weak_tls"`
 }
 
 type PortData struct {

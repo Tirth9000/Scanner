@@ -3,6 +3,7 @@ package main
 import (
     "context"
     "log"
+    "fmt"
 
     "scanner-platform/internal/queue"
     "scanner-platform/internal/worker"
@@ -21,6 +22,12 @@ func main() {
             continue
         }
 
-        worker.Run(ctx, job)
+        result, err := worker.Run(ctx, job)
+        if err != nil {
+            log.Println("Worker error:", err)
+            continue
+        }
+
+        fmt.Printf("Scan completed: %s (%d results)\n", job.ScanID, len(result))
     }
 }

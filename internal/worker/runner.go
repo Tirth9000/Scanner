@@ -4,84 +4,107 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"strconv"
 
 	"scanner-platform/internal/models"
-	// "scanner-platform/internal/webhook"
 	"scanner-platform/scanner-engine/core"
+	"scanner-platform/scanner-engine/scanners/collection"
 	"scanner-platform/scanner-engine/scanners/discovery"
 	"scanner-platform/scanner-engine/scanners/filters"
-    "scanner-platform/scanner-engine/scanners/collection"
 )
 
-func Run(ctx context.Context, job *models.ScanJob) {
-    log.Printf("Scan started: %s (%s)", job.ScanID, job.Domain)
+func Run(ctx context.Context, job *models.ScanJob) ([]core.Result, error) {
 
-    fmt.Println("Pipeline started for domain:", job.Domain)
+	log.Printf("Scan started: %s (%s)", job.ScanID, job.Target)
 
-    fmt.Println("Pipeline 1 : subdomain discovery")
+	fmt.Println("Pipeline started for domain:", job.Target)
 
-    registry := core.NewRegistry()
+	fmt.Println("Pipeline 1 : subdomain discovery")
 
-    registry.Register(discovery.NewDNSScanner())
-    registry.Register(discovery.NewCrtCTScanner())
-    registry.Register(discovery.NewCertSpotterCTScanner())
-    registry.Register(discovery.NewSubdomainBruteforceScanner())
-    registry.Register(discovery.NewSubdomainSubFinderScanner())
+	registry := core.NewRegistry()
 
-    pipeline := core.NewPipeline(registry)
+	registry.Register(discovery.NewDNSScanner())
+	registry.Register(discovery.NewCrtCTScanner())
+	registry.Register(discovery.NewCertSpotterCTScanner())
+	registry.Register(discovery.NewSubdomainBruteforceScanner())
+	registry.Register(discovery.NewSubdomainSubFinderScanner())
 
-    results, err := pipeline.Execute(ctx, job.Domain)
-    if err != nil {
-        panic(err)
-    }
+	pipeline := core.NewPipeline(registry)
 
-    fmt.Println("Total Subdomains Found:", len(results))
+	results, err := pipeline.Execute(ctx, job.Target)
+	if err != nil {
+		return nil, err
+	}
 
-    fmt.Println("Pipeline 2 : filter subdomain")
+	discovery_payload := map[string]string{
+		"scan_id": job.ScanID,
+		"target":  job.Target,
+		"event":   "subdomain_discovery_completed",
+		"data":    strconv.Itoa(len(results)),
+	}
+	discovery_res, err := send_webhook_notification(discovery_payload)
+	if err != nil {
+		log.Printf("Failed to send webhook notification: %v", err)
+	}
 
-    filter_registry := core.NewFilterScannerRegistry()
+	fmt.Println("Total Subdomains Found:", len(results), discovery_res)
 
-    filter_registry.RegisterFilterScanner(filters.NewDedupFilter())
-    filter_registry.RegisterFilterScanner(filters.NewDNSFilter())
-    filter_registry.RegisterFilterScanner(filters.NewHTTPFilter())
+	fmt.Println("Pipeline 2 : filter subdomain")
 
-    filter_pipeline := core.NewFilterPipeline(filter_registry)
+	filter_registry := core.NewFilterScannerRegistry()
 
-    filter_pipeline_results, err := filter_pipeline.ExecuteFilterScanners(ctx, results, job.Domain)
-    if err != nil {
-        panic(err)
-    }
+	filter_registry.RegisterFilterScanner(filters.NewDedupFilter())
+	filter_registry.RegisterFilterScanner(filters.NewDNSFilter())
+	filter_registry.RegisterFilterScanner(filters.NewHTTPFilter())
 
-    fmt.Println("Total Filtered Subdomains Found:", len(filter_pipeline_results))
+	filter_pipeline := core.NewFilterPipeline(filter_registry)
 
-    fmt.Println("Scanner 3 : Data collection")
+	filter_pipeline_results, err := filter_pipeline.ExecuteFilterScanners(ctx, results, job.Target)
+	if err != nil {
+		return nil, err
+	}
 
-    collection_registry := core.NewCollectionRegistry()
+	filter_payload := map[string]string{
+		"scan_id": job.ScanID,
+		"target":  job.Target,
+		"event":   "subdomain_filter_completed",
+		"data":    strconv.Itoa(len(filter_pipeline_results)),
+	}
+	filter_res, err := send_webhook_notification(filter_payload)
+	if err != nil {
+		log.Printf("Failed to send webhook notification: %v", err)
+	}
 
-    collection_registry.RegisterCollectionScanner(collection.NewHTTPXFilterOutput())
-    collection_registry.RegisterCollectionScanner(collection.NewPortFilter())
-    collection_registry.RegisterCollectionScanner(collection.NewTLSDataCollection())
+	fmt.Println("Total Filtered Subdomains Found:", len(filter_pipeline_results), filter_res)
 
-    collection_pipeline := core.NewCollectionPipeline(collection_registry)
 
-    collecgtion_data_results, err := collection_pipeline.ExecuteCollectionScanenrs(ctx, filter_pipeline_results, job.Domain)
-    if err != nil {
-        panic(err)
-    }
+	fmt.Println("Scanner 3 : Data collection")
 
-    // fmt.Println("Final Results:")
-    // for _, r := range collecgtion_data_results {
-    //     fmt.Printf("%+v\n", r)
-    // }
-    fmt.Println("Total Results Found:", len(collecgtion_data_results))
+	collection_registry := core.NewCollectionRegistry()
 
-    // webhook.Send(job.ScanID, "scan_started", nil)
+	collection_registry.RegisterCollectionScanner(collection.NewHTTPXFilterOutput())
+	collection_registry.RegisterCollectionScanner(collection.NewPortFilter())
+	collection_registry.RegisterCollectionScanner(collection.NewTLSDataCollection())
 
-    // pipeline := scanner.NewPipeline(job.Domain)
+	collection_pipeline := core.NewCollectionPipeline(collection_registry)
 
-    // for stage := range pipeline.Execute(ctx) {
-    //     webhook.Send(job.ScanID, stage.Name, stage.Data)
-    // }
+	collection_data_results, err := collection_pipeline.ExecuteCollectionScanenrs(ctx, filter_pipeline_results, job.Target)
+	if err != nil {
+		return nil, err
+	}
 
-    // webhook.Send(job.ScanID, "scan_completed", nil)
+    collection_payload := map[string]string{
+		"scan_id": job.ScanID,
+		"target":  job.Target,
+		"event":   "subdomain_collection_completed",
+		"data":    strconv.Itoa(len(collection_data_results)),
+	}
+	collection_res, err := send_webhook_notification(collection_payload)
+	if err != nil {
+		log.Printf("Failed to send webhook notification: %v", err)
+	}
+
+	fmt.Println("Total Results Found:", len(collection_data_results), collection_res)
+
+	return collection_data_results, nil
 }
