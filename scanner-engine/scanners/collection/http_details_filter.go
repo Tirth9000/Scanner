@@ -97,6 +97,7 @@ func (f *HTTPXFilterOutput) RunCollectionScanner(
 
 	for scanner.Scan() {
 		var hx struct {
+			IP            string   `json:"ip"`
 			URL           string   `json:"url"`
 			Input         string   `json:"input"`
 			Scheme        string   `json:"scheme"`
@@ -122,6 +123,7 @@ func (f *HTTPXFilterOutput) RunCollectionScanner(
 		}
 
 		data := core.HTTPScanData{
+			IP:           hx.HostIP,
 			Subdomain:    hx.Host,
 			URL:          hx.URL,
 			StatusCode:   hx.StatusCode,
@@ -138,12 +140,12 @@ func (f *HTTPXFilterOutput) RunCollectionScanner(
 		data.Metadata.ResponseTimeMs = hx.Time
 
 		httpData = append(httpData, core.Result{
-			Scanner:   f.Name(),
-			Category:  f.Category(),
-			Target:    target,
-			Data:      map[string]any{
+			Scanner:  f.Name(),
+			Category: f.Category(),
+			Target:   target,
+			Data: map[string]any{
 				"subdomain": hx.Host,
-				"http_data" : data,
+				"http_data": data,
 			},
 			Severity:  "info",
 			Timestamp: time.Now(),

@@ -1,7 +1,15 @@
 package models
 
+import "time"
 
 type ScanJob struct {
-    ScanID string `json:"scan_id"`
-    Domain string `json:"domain"`
+	ScanID string `json:"scan_id"`
+	Target string `json:"target"`
+}
+
+type ScanResult struct {
+	ScanID    string    `json:"scan_id"`
+	Target    string    `json:"target"`
+	Data      any       `json:"data"`
+	Timestamp time.Time `json:"timestamp"`
 }

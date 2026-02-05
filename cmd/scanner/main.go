@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"time"
 	"fmt"
 
 	"scanner-platform/scanner-engine/core"
@@ -12,7 +13,7 @@ import (
 
 func main() {
 	ctx := context.Background()
-	domain_name := "cloudflare.com"
+	domain_name := "vulnweb.com"
 
 	fmt.Println("Starting scanning for domain:", domain_name)
 	fmt.Println("Scanner 1 : Subdomain Discovery")
@@ -69,9 +70,23 @@ func main() {
 		panic(err)
 	}
 
-	fmt.Println("Final Results:")
+	allDataResult := []any{}
+
 	for _, r := range collection_pipeline_results {
-		fmt.Printf("%+v\n", r)
+		allDataResult = append(allDataResult, r.Data)
 	}
+
+	scanResult := core.ScanResult{
+		ScanID :  "sample-scan-id",
+		Target:    domain_name,
+		Data:      allDataResult,
+		Timestamp: time.Now(),
+	}
+
+	fmt.Println("Final Results:")
+	fmt.Println(scanResult)
+	// for _, r := range collection_pipeline_results {
+	// 	fmt.Printf("%+v\n", r)
+	// }
 	fmt.Println("Total Results Found:", len(collection_pipeline_results))
 }

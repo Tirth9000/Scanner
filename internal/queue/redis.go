@@ -16,7 +16,7 @@ type Queue struct {
 func New(addr string) *Queue {
     return &Queue{
         rdb: redis.NewClient(&redis.Options{Addr: addr}),
-        key: "scan_jobs",
+        key: "scan_queue",
     }
 }
 
