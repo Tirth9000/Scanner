@@ -28,6 +28,6 @@ func main() {
             continue
         }
 
-        fmt.Printf("Scan completed: %s (%d results)\n", job.ScanID, len(result))
+        fmt.Printf("Webhook response: %v\n", result)
     }
 }

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"strconv"
+	"time"
 
 	"scanner-platform/internal/models"
 	"scanner-platform/scanner-engine/core"
@@ -13,7 +14,7 @@ import (
 	"scanner-platform/scanner-engine/scanners/filters"
 )
 
-func Run(ctx context.Context, job *models.ScanJob) ([]core.Result, error) {
+func Run(ctx context.Context, job *models.ScanJob) (any, error) {
 
 	log.Printf("Scan started: %s (%s)", job.ScanID, job.Target)
 
@@ -77,7 +78,6 @@ func Run(ctx context.Context, job *models.ScanJob) ([]core.Result, error) {
 
 	fmt.Println("Total Filtered Subdomains Found:", len(filter_pipeline_results), filter_res)
 
-
 	fmt.Println("Scanner 3 : Data collection")
 
 	collection_registry := core.NewCollectionRegistry()
@@ -93,7 +93,7 @@ func Run(ctx context.Context, job *models.ScanJob) ([]core.Result, error) {
 		return nil, err
 	}
 
-    collection_payload := map[string]string{
+	collection_payload := map[string]string{
 		"scan_id": job.ScanID,
 		"target":  job.Target,
 		"event":   "subdomain_collection_completed",
@@ -106,5 +106,16 @@ func Run(ctx context.Context, job *models.ScanJob) ([]core.Result, error) {
 
 	fmt.Println("Total Results Found:", len(collection_data_results), collection_res)
 
-	return collection_data_results, nil
+	scanResult := []models.ScanResult{}
+
+	scanResult = append(scanResult, models.ScanResult{
+			ScanID: job.ScanID,
+			Target: job.Target,
+			Data:   collection_data_results,
+			Timestamp: time.Now(),
+	})
+
+	res, err := send_scan_result_webhook(scanResult[0])
+
+	return res, nil
 }

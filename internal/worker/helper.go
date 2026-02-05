@@ -2,28 +2,51 @@ package worker
 
 import (
 	"bytes"
-	"net/http"
 	"encoding/json"
+	"net/http"
+	"scanner-platform/internal/models"
 )
 
 func send_webhook_notification(payload map[string]string) (any, error) {
-	url := "http://0.0.0.0:8000/webhooks/scanner"
+	url := "http://0.0.0.0:8000/webhooks/scan/notification"
 
 	jsonData, err := json.Marshal(payload)
-    if err != nil {
-        return nil, err
-    }
-    res, err := http.Post(
-		url, 
-		"application/json", 
+	if err != nil {
+		return nil, err
+	}
+	res, err := http.Post(
+		url,
+		"application/json",
 		bytes.NewBuffer(jsonData),
 	)
 
-    if err != nil {
+	if err != nil {
 		return nil, err
-    }
-	
-    defer res.Body.Close()
+	}
+
+	defer res.Body.Close()
+
+	return res.Status, nil
+}
+
+func send_scan_result_webhook(payload models.ScanResult) (any, error) {
+	url := "http://0.0.0.0:8000/webhooks/scan/result"
+
+	jsonData, err := json.Marshal(payload)
+	if err != nil {
+		return nil, err
+	}
+	res, err := http.Post(
+		url,
+		"application/json",
+		bytes.NewBuffer(jsonData),
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	defer res.Body.Close()
 
 	return res.Status, nil
 }

@@ -2,6 +2,13 @@ package core
 
 import "time"
 
+type ScanResult struct {
+	ScanID    string
+	Target    string
+	Data      any
+	Timestamp time.Time
+}
+
 type Result struct {
 	Scanner   string
 	Category  string
