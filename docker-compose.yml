@@ -1,0 +1,21 @@
+services:
+  scanner:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: scanner-worker
+    networks:
+      - scanner-network
+    environment:
+      - REDIS_ADDR=redis:6379
+    volumes:
+      - .:/app
+  
+    
+networks:
+  scanner-network:
+    external: true
+  
+
+
+
