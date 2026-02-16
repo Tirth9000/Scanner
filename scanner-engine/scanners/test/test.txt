@@ -1,0 +1,51 @@
+Starting scanning for domain: allianzcloud.com
+Scanner 1 : Subdomain Discovery
+Starting discovery pipeline for target: allianzcloud.com
+Running scanner: dns_scanner
+Completed scanner: dns_scanner
+Total results so far: 1
+Running scanner: subdomain_crtsh
+155
+Completed scanner: subdomain_crtsh
+Total results so far: 156
+Running scanner: subdomain_certspotter
+32
+Completed scanner: subdomain_certspotter
+Total results so far: 188
+Running scanner: subdomain_bruteforce
+7
+Completed scanner: subdomain_bruteforce
+Total results so far: 195
+Running scanner: subdomain_subfinder
+189
+Completed scanner: subdomain_subfinder
+Total results so far: 384
+Total Subdomains Found: 384
+Scanner 2 : Subdomain Filter
+Starting filter pipeline for domain: allianzcloud.com
+Running filter scanner: DedupFilter
+Completed filter scanner: DedupFilter
+Running filter scanner: DNSFilter
+Completed filter scanner: DNSFilter
+Running filter scanner: HTTPFilter
+Completed filter scanner: HTTPFilter
+Total subdomains so far: 7
+Total Filtered Subdomains Found: 7
+Scanner 3 : Data Collection
+Starting collection pipeline for domain: allianzcloud.com
+Running collection scanner: HTTPXFilter Details
+Completed collection scanner: HTTPXFilter Details
+Running collection scanner: ProtFilter
+Completed collection scanner: ProtFilter
+Running collection scanner: TLS Scanner
+Completed collection scanner: TLS Scanner
+Total data collected so far: 7
+Final Results:
+{Scanner:HTTPXFilter Details Category:HTTPX FilterScanner Target:allianzcloud.com Data:map[http_data:{Subdomain:subscriptions.allianzcloud.com URL:https://subscriptions.allianzcloud.com StatusCode:200 Scheme:https Server: Technologies:[HSTS Java] TLS:{Enabled:true Version: Issuer: Expired:false} Headers:{ContentSecurityPolicy:false StrictTransport:false XFrameOptions:false XContentTypeOptions:false} Redirects:{FinalURL: RedirectCount:0} Metadata:{Title: ContentType:text/html ContentLength:49 ResponseTimeMs:249.636708ms}} subdomain:subscriptions.allianzcloud.com] Severity:
+info Timestamp:2026-01-19 23:24:17.556254 +0530 IST m=+131.489876668}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             {Scanner:HTTPXFilter Details Category:HTTPX FilterScanner Target:allianzcloud.com Data:map[http_data:{Subdomain:billing.allianzcloud.com URL:https://billing.allianzcloud.com StatusCode:200 Scheme:https Server: Technologies:[HSTS Java] TLS:{Enabled:true Version: Issuer: Expired:false} Headers:{ContentSecurityPolicy:false StrictTransport:false XFrameOptions:false XContentTypeOptions:false} Redirects:{FinalURL: RedirectCount:0} Metadata:{Title:Online Accounting Software ContentType:text/html ContentLength:1253 ResponseTimeMs:251.486ms}} ports:[{Port:443 Protocol:tcp TLSDetai
+ls:<nil>} {Port:80 Protocol:tcp TLSDetails:<nil>} {Port:443 Protocol:tcp TLSDetails:<nil>} {Port:80 Protocol:tcp TLSDetails:<nil>}] subdomain:billing.allianzcloud.com] Severity:info Timestamp:2026-01-19 23:24:17.578542 +0530 IST m=+131.512165876}                                                                                                                                                                                                                                                                                                                                            {Scanner:HTTPXFilter Details Category:HTTPX FilterScanner Target:allianzcloud.com Data:map[http_data:{Subdomain:xscloud.allianzcloud.com URL:https://xscloud.allianzcloud.com StatusCode:302 Scheme:https Server: Technologies:[HSTS Nginx] TLS:{Enabled:true Version: Issuer: Expired:false} Headers:{ContentSecurityPolicy:false StrictTransport:false XFrameOptions:false XContentTypeOptions:false} Redirects:{FinalURL: RedirectCount:0} Metadata:{Title:302 Found ContentType:text/html ContentLength:138 ResponseTimeMs:1.029652792s}} ports:[{Port:5357 Protocol:tcp TLSDetails:<nil>} {Po
+rt:80 Protocol:tcp TLSDetails:<nil>} {Port:111 Protocol:tcp TLSDetails:<nil>} {Port:443 Protocol:tcp TLSDetails:<nil>} {Port:139 Protocol:tcp TLSDetails:<nil>} {Port:22 Protocol:tcp TLSDetails:<nil>} {Port:80 Protocol:tcp TLSDetails:<nil>} {Port:111 Protocol:tcp TLSDetails:<nil>} {Port:443 Protocol:tcp TLSDetails:<nil>} {Port:139 Protocol:tcp TLSDetails:<nil>} {Port:22 Protocol:tcp TLSDetails:<nil>} {Port:5357 Protocol:tcp TLSDetails:<nil>}] subdomain:xscloud.allianzcloud.com] Severity:info Timestamp:2026-01-19 23:24:18.326318 +0530 IST m=+132.259971751}                  {Scanner:HTTPXFilter Details Category:HTTPX FilterScanner Target:allianzcloud.com Data:map[http_data:{Subdomain:stream.allianzcloud.com URL:https://stream.allianzcloud.com StatusCode:200 Scheme:https Server: Technologies:[Moment.js Nginx:1.24.0 OWL Carousel SweetAlert2 Ubuntu jQuery parallax.js] TLS:{Enabled:true Version: Issuer: Expired:false} Headers:{ContentSecurityPolicy:false StrictTransport:false XFrameOptions:false XContentTypeOptions:false} Redirects:{FinalURL: RedirectCount:0} Metadata:{Title:Home | iSecurify LMS ContentType:text/html ContentLength:55505 Response
+TimeMs:780.847792ms}} subdomain:stream.allianzcloud.com] Severity:info Timestamp:2026-01-19 23:24:18.370505 +0530 IST m=+132.304161001}                                                                                                                                                                                                                                                                                                                                                                                                                                                           {Scanner:HTTPXFilter Details Category:HTTPX FilterScanner Target:allianzcloud.com Data:map[http_data:{Subdomain:inventory1.allianzcloud.com URL:https://inventory1.allianzcloud.com StatusCode:200 Scheme:https Server: Technologies:[HSTS] TLS:{Enabled:true Version: Issuer: Expired:false} Headers:{ContentSecurityPolicy:false StrictTransport:false XFrameOptions:false XContentTypeOptions:false} Redirects:{FinalURL: RedirectCount:0} Metadata:{Title:BunkerWeb ContentType:text/html ContentLength:8756 ResponseTimeMs:1.0963535s}} ports:[{Port:443 Protocol:tcp TLSDetails:<nil>} {Port
+:443 Protocol:tcp TLSDetails:<nil>}] subdomain:inventory1.allianzcloud.com] Severity:info Timestamp:2026-01-19 23:24:18.415028 +0530 IST m=+132.348685251}                                                                                                                                                                                                                                                                                                                                                                                                                                        {Scanner:HTTPXFilter Details Category:HTTPX FilterScanner Target:allianzcloud.com Data:map[http_data:{Subdomain:support.allianzcloud.com URL:http://support.allianzcloud.com StatusCode:301 Scheme:http Server: Technologies:[HSTS Nginx] TLS:{Enabled:false Version: Issuer: Expired:false} Headers:{ContentSecurityPolicy:false StrictTransport:false XFrameOptions:false XContentTypeOptions:false} Redirects:{FinalURL: RedirectCount:0} Metadata:{Title: ContentType:text/html ContentLength:1001 ResponseTimeMs:690.265833ms}} ports:[{Port:80 Protocol:tcp TLSDetails:<nil>} {Port:80 Proto
+col:tcp TLSDetails:<nil>}] subdomain:support.allianzcloud.com] Severity:info Timestamp:2026-01-19 23:24:18.425863 +0530 IST m=+132.359521168}                                                                                                                                                                                                                                                                                                                                                                                                                                                     {Scanner:HTTPXFilter Details Category:HTTPX FilterScanner Target:allianzcloud.com Data:map[http_data:{Subdomain:mail.allianzcloud.com URL:https://mail.allianzcloud.com StatusCode:200 Scheme:https Server: Technologies:[Java Nginx Zimbra] TLS:{Enabled:true Version: Issuer: Expired:false} Headers:{ContentSecurityPolicy:false StrictTransport:false XFrameOptions:false XContentTypeOptions:false} Redirects:{FinalURL: RedirectCount:0} Metadata:{Title:Zimbra Web Client Sign In ContentType:text/html ContentLength:12307 ResponseTimeMs:1.45765125s}} ports:[{Port:22 Protocol:tcp TLSDe
+tails:<nil>} {Port:993 Protocol:tcp TLSDetails:<nil>} {Port:389 Protocol:tcp TLSDetails:<nil>} {Port:587 Protocol:tcp TLSDetails:<nil>} {Port:22 Protocol:tcp TLSDetails:<nil>} {Port:993 Protocol:tcp TLSDetails:<nil>} {Port:389 Protocol:tcp TLSDetails:<nil>} {Port:587 Protocol:tcp TLSDetails:<nil>}] subdomain:mail.allianzcloud.com] Severity:info Timestamp:2026-01-19 23:24:18.813667 +0530 IST m=+132.747340084}                                                                                                                                                                       Total Results Found: 7
