@@ -4,6 +4,7 @@ import (
     "context"
     "log"
     "fmt"
+    "os"
 
     "scanner-platform/internal/queue"
     "scanner-platform/internal/worker"
@@ -11,12 +12,18 @@ import (
 
 func main() {
     ctx := context.Background()
-    q := queue.New("localhost:6379")
+    addr := os.Getenv("REDIS_ADDR")
+    if addr == "" {
+        addr = "redis:6379"
+    }
+
+    q := queue.New(addr)
 
     log.Println("Scanner worker started")
 
     for {
         job, err := q.Pop(ctx)
+        fmt.Println(job)
         if err != nil {
             log.Println("Queue error:", err)
             continue

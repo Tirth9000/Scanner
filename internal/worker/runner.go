@@ -37,11 +37,11 @@ func Run(ctx context.Context, job *models.ScanJob) (any, error) {
 		return nil, err
 	}
 
-	discovery_payload := map[string]string{
-		"scan_id": job.ScanID,
-		"target":  job.Target,
-		"event":   "subdomain_discovery_completed",
-		"data":    strconv.Itoa(len(results)),
+	discovery_payload := models.ScanNotification{
+		ScanID: job.ScanID,
+		Target:  job.Target,
+		Event:   "subdomain_discovery_completed",
+		Data:    strconv.Itoa(len(results)),
 	}
 	discovery_res, err := send_webhook_notification(discovery_payload)
 	if err != nil {
@@ -65,11 +65,11 @@ func Run(ctx context.Context, job *models.ScanJob) (any, error) {
 		return nil, err
 	}
 
-	filter_payload := map[string]string{
-		"scan_id": job.ScanID,
-		"target":  job.Target,
-		"event":   "subdomain_filter_completed",
-		"data":    strconv.Itoa(len(filter_pipeline_results)),
+	filter_payload := models.ScanNotification{
+		ScanID: job.ScanID,
+		Target:  job.Target,
+		Event:   "subdomain_filter_completed",
+		Data:    strconv.Itoa(len(filter_pipeline_results)),
 	}
 	filter_res, err := send_webhook_notification(filter_payload)
 	if err != nil {
@@ -93,12 +93,13 @@ func Run(ctx context.Context, job *models.ScanJob) (any, error) {
 		return nil, err
 	}
 
-	collection_payload := map[string]string{
-		"scan_id": job.ScanID,
-		"target":  job.Target,
-		"event":   "subdomain_collection_completed",
-		"data":    strconv.Itoa(len(collection_data_results)),
+	collection_payload := models.ScanNotification{
+		ScanID: job.ScanID,
+		Target:  job.Target,
+		Event:   "subdomain_collection_completed",
+		Data:    strconv.Itoa(len(collection_data_results)),
 	}
+
 	collection_res, err := send_webhook_notification(collection_payload)
 	if err != nil {
 		log.Printf("Failed to send webhook notification: %v", err)
