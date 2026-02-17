@@ -1,0 +1,267 @@
+[
+  {
+    "scanner": "HTTPXFilter",
+    "category": "HTTPX Filter",
+    "target": "vulnweb.com",
+    "severity": "info",
+    "timestamp": "2026-01-27T15:46:50.206285+05:30",
+    "data": {
+      "http_data": {
+        "subdomain": "testasp.vulnweb.com",
+        "url": "http://testasp.vulnweb.com",
+        "status_code": 200,
+        "scheme": "http",
+        "technologies": [
+          "DreamWeaver",
+          "IIS:8.5",
+          "Microsoft ASP.NET",
+          "Windows Server"
+        ],
+        "tls": {
+          "enabled": false,
+          "version": "",
+          "issuer": "",
+          "expired": false
+        },
+        "headers": {
+          "content_security_policy": false,
+          "strict_transport": false,
+          "x_frame_options": false,
+          "x_content_type_options": false
+        },
+        "redirects": {
+          "final_url": "",
+          "redirect_count": 0
+        },
+        "metadata": {
+          "title": "acuforum forums",
+          "content_type": "text/html",
+          "content_length": 3538,
+          "response_time_ms": 684.269625
+        }
+      },
+      "ports": [
+        { "port": 80, "protocol": "tcp", "tls_details": null },
+        { "port": 80, "protocol": "tcp", "tls_details": null }
+      ]
+    }
+  },
+  {
+    "scanner": "HTTPXFilter",
+    "category": "HTTPX Filter",
+    "target": "vulnweb.com",
+    "severity": "info",
+    "timestamp": "2026-01-27T15:46:50.228348+05:30",
+    "data": {
+      "http_data": {
+        "subdomain": "www.vulnweb.com",
+        "url": "http://www.vulnweb.com",
+        "status_code": 200,
+        "scheme": "http",
+        "technologies": ["Nginx:1.19.0"],
+        "tls": {
+          "enabled": false,
+          "version": "",
+          "issuer": "",
+          "expired": false
+        },
+        "headers": {
+          "content_security_policy": false,
+          "strict_transport": false,
+          "x_frame_options": false,
+          "x_content_type_options": false
+        },
+        "redirects": {
+          "final_url": "",
+          "redirect_count": 0
+        },
+        "metadata": {
+          "title": "Acunetix Web Vulnerability Scanner - Test websites",
+          "content_type": "text/html",
+          "content_length": 4018,
+          "response_time_ms": 721.303583
+        }
+      }
+    }
+  },
+  {
+    "scanner": "HTTPXFilter",
+    "category": "HTTPX Filter",
+    "target": "vulnweb.com",
+    "severity": "info",
+    "timestamp": "2026-01-27T15:46:50.233621+05:30",
+    "data": {
+      "http_data": {
+        "subdomain": "testphp.vulnweb.com",
+        "url": "http://testphp.vulnweb.com",
+        "status_code": 200,
+        "scheme": "http",
+        "technologies": ["DreamWeaver", "Nginx:1.19.0", "PHP:5.6.40", "Ubuntu"],
+        "tls": {
+          "enabled": false,
+          "version": "",
+          "issuer": "",
+          "expired": false
+        },
+        "headers": {
+          "content_security_policy": false,
+          "strict_transport": false,
+          "x_frame_options": false,
+          "x_content_type_options": false
+        },
+        "redirects": {
+          "final_url": "",
+          "redirect_count": 0
+        },
+        "metadata": {
+          "title": "Home of Acunetix Art",
+          "content_type": "text/html",
+          "content_length": 4958,
+          "response_time_ms": 722.013583
+        }
+      },
+      "ports": [
+        { "port": 80, "protocol": "tcp", "tls_details": null },
+        { "port": 80, "protocol": "tcp", "tls_details": null }
+      ]
+    }
+  },
+  {
+    "scanner": "HTTPXFilter",
+    "category": "HTTPX Filter",
+    "target": "vulnweb.com",
+    "severity": "info",
+    "timestamp": "2026-01-27T15:46:50.253517+05:30",
+    "data": {
+      "http_data": {
+        "subdomain": "testhtml5.vulnweb.com",
+        "url": "http://testhtml5.vulnweb.com",
+        "status_code": 200,
+        "scheme": "http",
+        "technologies": [
+          "Amazon S3",
+          "Amazon Web Services",
+          "AngularJS",
+          "Bootstrap:2.3.1",
+          "Google Hosted Libraries",
+          "Nginx:1.19.0",
+          "jQuery CDN",
+          "jQuery:1.9.1"
+        ],
+        "tls": {
+          "enabled": false,
+          "version": "",
+          "issuer": "",
+          "expired": false
+        },
+        "headers": {
+          "content_security_policy": false,
+          "strict_transport": false,
+          "x_frame_options": false,
+          "x_content_type_options": false
+        },
+        "redirects": {
+          "final_url": "",
+          "redirect_count": 0
+        },
+        "metadata": {
+          "title": "SecurityTweets - HTML5 test website for Acunetix Web Vulnerability Scanner",
+          "content_type": "text/html",
+          "content_length": 6940,
+          "response_time_ms": 707.339417
+        }
+      },
+      "ports": [
+        { "port": 80, "protocol": "tcp", "tls_details": null },
+        { "port": 80, "protocol": "tcp", "tls_details": null }
+      ]
+    }
+  },
+  {
+    "scanner": "HTTPXFilter",
+    "category": "HTTPX Filter",
+    "target": "vulnweb.com",
+    "severity": "info",
+    "timestamp": "2026-01-27T15:46:50.610418+05:30",
+    "data": {
+      "http_data": {
+        "subdomain": "testaspnet.vulnweb.com",
+        "url": "http://testaspnet.vulnweb.com",
+        "status_code": 200,
+        "scheme": "http",
+        "technologies": [
+          "IIS:8.5",
+          "Microsoft ASP.NET:2.0.50727",
+          "Microsoft Visual Studio",
+          "Windows Server"
+        ],
+        "tls": {
+          "enabled": false,
+          "version": "",
+          "issuer": "",
+          "expired": false
+        },
+        "headers": {
+          "content_security_policy": false,
+          "strict_transport": false,
+          "x_frame_options": false,
+          "x_content_type_options": false
+        },
+        "redirects": {
+          "final_url": "",
+          "redirect_count": 0
+        },
+        "metadata": {
+          "title": "acublog news",
+          "content_type": "text/html",
+          "content_length": 14039,
+          "response_time_ms": 1034.935291
+        }
+      }
+    }
+  },
+  {
+    "scanner": "HTTPXFilter",
+    "category": "HTTPX Filter",
+    "target": "vulnweb.com",
+    "severity": "info",
+    "timestamp": "2026-01-27T15:46:51.732546+05:30",
+    "data": {
+      "http_data": {
+        "subdomain": "rest.vulnweb.com",
+        "url": "http://rest.vulnweb.com",
+        "status_code": 200,
+        "scheme": "http",
+        "technologies": ["Apache HTTP Server:2.4.25", "Debian", "PHP:7.1.26"],
+        "tls": {
+          "enabled": false,
+          "version": "",
+          "issuer": "",
+          "expired": false
+        },
+        "headers": {
+          "content_security_policy": false,
+          "strict_transport": false,
+          "x_frame_options": false,
+          "x_content_type_options": false
+        },
+        "redirects": {
+          "final_url": "",
+          "redirect_count": 0
+        },
+        "metadata": {
+          "title": "Invicti Vulnerable REST API",
+          "content_type": "text/html",
+          "content_length": 3556,
+          "response_time_ms": 2214.783
+        }
+      },
+      "ports": [
+        { "port": 80, "protocol": "tcp", "tls_details": null },
+        { "port": 8081, "protocol": "tcp", "tls_details": null },
+        { "port": 80, "protocol": "tcp", "tls_details": null },
+        { "port": 8081, "protocol": "tcp", "tls_details": null }
+      ]
+    }
+  }
+]

@@ -7,6 +7,13 @@ type ScanJob struct {
 	Target string `json:"target"`
 }
 
+type ScanNotification struct {
+	ScanID string `json:"scan_id"`
+	Target string `json:"target"`
+	Event  string `json:"event"`
+	Data   string `json:"data"`
+}
+
 type ScanResult struct {
 	ScanID    string    `json:"scan_id"`
 	Target    string    `json:"target"`

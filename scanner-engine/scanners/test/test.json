@@ -1,0 +1,158 @@
+{
+  "error": 200,
+  "errorstr": "success",
+  "report": {
+    "blacklist_report": {
+      "blacklist_status": "NoThreat",
+      "providers": [
+        {
+          "name": "Google Safebrowsing",
+          "score": 0,
+          "status": "NoThreat",
+          "time": "1756880537"
+        },
+        {
+          "name": "Phishtank",
+          "score": 0,
+          "status": "NoThreat",
+          "time": "1764504035"
+        },
+        {
+          "name": "Quttera Labs",
+          "score": 0,
+          "status": "NoThreat",
+          "time": "1764504035"
+        },
+        {
+          "name": "Yandex Safebrowsing",
+          "score": 0,
+          "status": "NoThreat",
+          "time": "1767860863"
+        },
+        {
+          "name": "Spamhaus Zen",
+          "score": 0,
+          "status": "NoThreat",
+          "time": "1764504035"
+        },
+        {
+          "name": "Spamhaus ZRD",
+          "score": 29,
+          "status": "NoThreat",
+          "time": "1764504035"
+        },
+        {
+          "name": "Spamhaus CSS",
+          "score": 0,
+          "status": "NoThreat",
+          "time": "1764504035"
+        },
+        {
+          "name": "URLhaus",
+          "score": 0,
+          "status": "NoThreat",
+          "time": "1764504035"
+        },
+        {
+          "name": "QBMA",
+          "score": 0,
+          "status": "NoThreat",
+          "time": "1756864886"
+        }
+      ]
+    },
+    "blacklisted_domains": {},
+    "blacklisted_domains_count": 0,
+    "blacklisted_iframes": {},
+    "blacklisted_iframes_count": 0,
+    "blacklisted_links": {},
+    "blacklisted_links_count": 0,
+    "domains": {
+      "allianzcloud.com": "NoThreat",
+      "challenges.cloudflare.com": "NoThreat",
+      "isecurify.co": "NoThreat"
+    },
+    "domains_count": 3,
+    "files": [
+      {
+        "MD5": "ACF41A0D5E5E09D77CD7BF1ABE6C71F4",
+        "_severity": "clean",
+        "details": "File is clean.",
+        "dumpMD5": "00000000000000000000000000000000",
+        "endtime": "Thu Jan  8 08:27:38 2026",
+        "filename": "challenge.http-redirect",
+        "filesize": "73",
+        "filetype": "ASCII",
+        "layer": "js-emulation-layer",
+        "line": "0",
+        "offset": "0",
+        "pattern_id": "N/A",
+        "reason": "No significant issues detected.",
+        "result": "1",
+        "scantime": "0.089000",
+        "threat": "Clean",
+        "threat_name": "Undefined"
+      },
+      {
+        "MD5": "8EB85CAA093F0A04262EAC2B736194C9",
+        "_severity": "clean",
+        "details": "File is clean.",
+        "dumpMD5": "00000000000000000000000000000000",
+        "endtime": "Thu Jan  8 08:27:39 2026",
+        "filename": "allianzcloud.com/index.html",
+        "filesize": "174022",
+        "filetype": "HTML",
+        "layer": "js-emulation-layer",
+        "line": "0",
+        "offset": "0",
+        "pattern_id": "N/A",
+        "reason": "No significant issues detected.",
+        "result": "1",
+        "scantime": "1.719000",
+        "threat": "Clean",
+        "threat_name": "Undefined"
+      },
+      {
+        "MD5": "081883F5A2ABA58DF0C2CDA884C2F0AF",
+        "_severity": "clean",
+        "details": "File is clean.",
+        "dumpMD5": "00000000000000000000000000000000",
+        "endtime": "Thu Jan  8 08:27:41 2026",
+        "filename": "allianzcloud.com/robots.txt",
+        "filesize": "174022",
+        "filetype": "HTML",
+        "layer": "js-emulation-layer",
+        "line": "0",
+        "offset": "0",
+        "pattern_id": "N/A",
+        "reason": "No significant issues detected.",
+        "result": "1",
+        "scantime": "1.678000",
+        "threat": "Clean",
+        "threat_name": "Undefined"
+      }
+    ],
+    "http_timeout": 0.033626,
+    "iframes": {},
+    "iframes_count": 0,
+    "links": {
+      "http://allianzcloud.com/data:image/svg+xml,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22UTF-8%22%3F%3E%3Csvg%20version%3D%221.1%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22663%22%20height%3D%22662%22%3E%3Cpath%20d%3D%22M0%200%20P%3B": "NoThreat",
+      "https://challenges.cloudflare.com/turnstile/v0/api.js": "NoThreat",
+      "https://isecurify.co/": "NoThreat"
+    },
+    "links_count": 3,
+    "malicious_files": 0,
+    "psuspicious_files": 0,
+    "sandbox_requests": [],
+    "scanned_content": 375428,
+    "scanned_files": 3,
+    "sensitivity": "HEURISTIC",
+    "state": "clean",
+    "suspicious_files": 0,
+    "time": 1767860861.9034417,
+    "timestr": "Thu Jan  8 08:27:41 2026",
+    "type": "Heuristic External HTTP(s) Scan",
+    "url": "allianzcloud.com",
+    "web_platform": "WordPress"
+  }
+}
