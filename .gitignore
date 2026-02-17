@@ -2,4 +2,5 @@
 .VSCode
 test/
 
-
+cmd/scanner/resume.cfg
+cmd/worker/resume.cfg
