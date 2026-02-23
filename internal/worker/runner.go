@@ -28,7 +28,7 @@ func Run(ctx context.Context, job *models.ScanJob) (any, error) {
 	registry.Register(discovery.NewCrtCTScanner())
 	registry.Register(discovery.NewCertSpotterCTScanner())
 	registry.Register(discovery.NewSubdomainBruteforceScanner())
-	registry.Register(discovery.NewSubdomainSubFinderScanner())
+	// registry.Register(discovery.NewSubdomainSubFinderScanner())
 
 	pipeline := core.NewPipeline(registry)
 
@@ -108,11 +108,16 @@ func Run(ctx context.Context, job *models.ScanJob) (any, error) {
 	fmt.Println("Total Results Found:", len(collection_data_results), collection_res)
 
 	scanResult := []models.ScanResult{}
+	data := []any{}
 
+	for _, res := range collection_data_results {
+		data = append(data, res.Data)
+	}
+	
 	scanResult = append(scanResult, models.ScanResult{
 			ScanID: job.ScanID,
 			Target: job.Target,
-			Data:   collection_data_results,
+			Data:   data,
 			Timestamp: time.Now(),
 	})
 

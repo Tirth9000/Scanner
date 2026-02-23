@@ -72,11 +72,12 @@ func (f *PortFilter) RunCollectionScanner(
 
 		for _, r := range results {
 			data, ok := r.Data.(map[string]any)
+			fmt.Println(r.Data)
 			if !ok {
 				continue
 			}
 
-			sub := data["subdomain"].(string)
+			sub := data["subdomain"]
 
 			if sub == "" {
 				continue

@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	"time"
+	// "time"
 	"fmt"
 
 	"scanner-platform/scanner-engine/core"
@@ -25,7 +25,7 @@ func main() {
 	registry.Register(discovery.NewCrtCTScanner())
 	registry.Register(discovery.NewCertSpotterCTScanner())
 	registry.Register(discovery.NewSubdomainBruteforceScanner())
-	registry.Register(discovery.NewSubdomainSubFinderScanner())
+	// registry.Register(discovery.NewSubdomainSubFinderScanner())
 
 	pipeline := core.NewPipeline(registry)
 
@@ -61,6 +61,7 @@ func main() {
 	collection_registry := core.NewCollectionRegistry()
 
 	collection_registry.RegisterCollectionScanner(collection.NewHTTPXFilterOutput())
+	collection_registry.RegisterCollectionScanner(collection.NewDNSDataOutput())
 	collection_registry.RegisterCollectionScanner(collection.NewPortFilter())
 	collection_registry.RegisterCollectionScanner(collection.NewTLSDataCollection())
 
@@ -71,23 +72,23 @@ func main() {
 		panic(err)
 	}
 
-	allDataResult := []any{}
+	// allDataResult := []any{}
 
-	for _, r := range collection_pipeline_results {
-		allDataResult = append(allDataResult, r.Data)
-	}
-
-	scanResult := core.ScanResult{
-		ScanID :  "sample-scan-id",
-		Target:    domain_name,
-		Data:      allDataResult,
-		Timestamp: time.Now(),
-	}
-
-	fmt.Println("Final Results:")
-	fmt.Println(scanResult)
 	// for _, r := range collection_pipeline_results {
-	// 	fmt.Printf("%+v\n", r)
+	// 	allDataResult = append(allDataResult, r.Data)
 	// }
+
+	// scanResult := core.ScanResult{
+	// 	ScanID :  "sample-scan-id",
+	// 	Target:    domain_name,
+	// 	Data:      allDataResult,
+	// 	Timestamp: time.Now(),
+	// }
+
+	// fmt.Println("Final Results:")
+	// fmt.Println(scanResult)
+	for _, r := range collection_pipeline_results {
+		fmt.Printf("%+v\n", r)
+	}
 	fmt.Println("Total Results Found:", len(collection_pipeline_results))
 }
