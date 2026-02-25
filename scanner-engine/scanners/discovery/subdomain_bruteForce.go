@@ -23,7 +23,9 @@ func (s *SubdomainBruteforceScanner) Category() string {
 	return "discovery"
 }
 
-func (s *SubdomainBruteforceScanner) Run(ctx context.Context, target string) ([]core.Result, error) {
+func (s *SubdomainBruteforceScanner) RunDiscoveryScanner(
+	ctx context.Context, 
+	target string) (core.Result, error) {
 	wordlist := []string{
 		"www",
 		"api",
@@ -34,7 +36,7 @@ func (s *SubdomainBruteforceScanner) Run(ctx context.Context, target string) ([]
 		"mail",
 	}
 
-	results := []core.Result{}
+	var results []string
 
 	for _, word := range wordlist {
 		subdomain := fmt.Sprintf("%s.%s", word, target)
@@ -49,21 +51,30 @@ func (s *SubdomainBruteforceScanner) Run(ctx context.Context, target string) ([]
 		}
 
 		if ips != nil {
-			results = append(results, core.Result{
-				Scanner: s.Name(),
-				Category: s.Category(),
-				Target: target,
-				Data: map[string]string{
-					"subdomain": subdomain,
-					"method": "dns_bruteforce",
-				},
-				Severity: "info",
-				Timestamp:  time.Now(),
-				},
-			)}
+			results = append(results, subdomain)
+			// results = append(results, core.Result{
+			// 	Scanner: s.Name(),
+			// 	Category: s.Category(),
+			// 	Target: target,
+			// 	Data: map[string]string{
+			// 		"subdomain": subdomain,
+			// 		"method": "dns_bruteforce",
+			// 	},
+			// 	Severity: "info",
+			// 	Timestamp:  time.Now(),
+			// 	},
+			// )}
+		}
 	}
 
-	fmt.Println(len(results))
+	brute_force_subdomains_found := core.Result{
+		Scanner: s.Name(),
+		Category: s.Category(),
+		Target: target,
+		Data: results,
+		Severity: "info",
+		Timestamp: time.Now(),
+	}
 
-	return results, nil
+	return brute_force_subdomains_found, nil
 }

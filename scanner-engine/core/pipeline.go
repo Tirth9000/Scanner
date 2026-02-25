@@ -3,38 +3,55 @@ package core
 import (
 	"context"
 	"fmt"
+	"net"
+	"time"
 )
 
-type Pipeline struct {
+type DiscoveryPipeline struct {
 	registry *Registry
 	runner *Runner
 }
 
-func NewPipeline(registry *Registry) *Pipeline {
-	return &Pipeline{
+func NewDiscoveryPipeline(registry *Registry) *DiscoveryPipeline {
+	return &DiscoveryPipeline{
 		registry: registry,
 		runner: NewRunner(),
 	}
 }
 
-func (p *Pipeline) Execute(ctx context.Context, target string) ([]Result, error) {
-	var results []Result
+func (p *DiscoveryPipeline) Execute(ctx context.Context, target string) (ScanResult, error) {
+	var results []string
+
+	ips, err := net.LookupIP(target)
+	if err != nil || len(ips) == 0 {
+		return ScanResult{}, err
+	}
 
 	fmt.Println("Starting discovery pipeline for target:", target)
 
 	for _, scanner := range p.registry.All() {
 		fmt.Println("Running scanner:", scanner.Name())
-		res, err := p.runner.Run(ctx, scanner, target)
+		res, err := p.runner.RunDiscoveryScanner(ctx, scanner, target)
 		if err != nil {
 			fmt.Println("Scanner error:", scanner.Name(), err)
 			continue
 		}
-		results = append(results, res...)
+		data := res.Data.([]string)
+		results = append(results, data...)
 		fmt.Println("Completed scanner:", scanner.Name())
 		fmt.Println("Total results so far:", len(results))
 	}
 
-	return results, nil
+	subdomainsFound := ScanResult{
+		ScanID: "1234",
+		Target: target,
+		Data: results,
+		Timestamp: time.Now(),
+	}
+
+	fmt.Println(subdomainsFound)
+
+	return subdomainsFound, nil
 }
 
 
@@ -50,7 +67,7 @@ func NewFilterPipeline(registry *FilterScannerRegistry) *FilterScannerPipeline {
 	}
 }
 
-func (p *FilterScannerPipeline) ExecuteFilterScanners(ctx context.Context, subdomains []Result, domain string) ([]Result, error) {
+func (p *FilterScannerPipeline) ExecuteFilterScanners(ctx context.Context, subdomains Result, domain string) (Result, error) {
 	fmt.Println("Starting filter pipeline for domain:", domain)
 
 	for _, scanner := range p.registry.All() {
@@ -61,7 +78,7 @@ func (p *FilterScannerPipeline) ExecuteFilterScanners(ctx context.Context, subdo
 			continue
 		}
 		fmt.Println("Completed filter scanner:", scanner.Name())
-		fmt.Println("Total subdomains so far:", len(res))
+		// fmt.Println("Total subdomains so far:", len(res))
 		
 		subdomains = res
 	}

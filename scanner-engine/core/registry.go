@@ -1,18 +1,18 @@
 package core
 
 type Registry struct {
-	scanners []Scanner
+	scanners []DiscoveryScanner
 }
 
 func NewRegistry() *Registry {
 	return &Registry{}
 }
 
-func (r *Registry) Register(scanner Scanner) {
+func (r *Registry) Register(scanner DiscoveryScanner) {
 	r.scanners = append(r.scanners, scanner)
 }
 
-func (r *Registry) All() []Scanner {
+func (r *Registry) All() []DiscoveryScanner {
 	return r.scanners
 }
 

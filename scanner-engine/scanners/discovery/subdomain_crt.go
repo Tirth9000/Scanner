@@ -1,13 +1,13 @@
 package discovery
 
 import (
-    "context"
-    "encoding/json"
-    "net/http"
-    "strings"
+	"context"
+	"encoding/json"
+	"net/http"
+	"strings"
 	"time"
 
-    "scanner-platform/scanner-engine/core"
+	"scanner-platform/scanner-engine/core"
 )
 
 type CrtCTScanner struct{}
@@ -17,68 +17,69 @@ func NewCrtCTScanner() *CrtCTScanner {
 }
 
 func (c *CrtCTScanner) Name() string {
-    return "subdomain_crtsh"
+	return "subdomain_crtsh"
 }
 
 func (c *CrtCTScanner) Category() string {
-    return "discovery"
+	return "discovery"
 }
 
-func (c *CrtCTScanner) Run(ctx context.Context, domain string) ([]core.Result, error) {
-    url := "https://crt.sh/?q=%25." + domain + "&output=json"
+func (c *CrtCTScanner) RunDiscoveryScanner(ctx context.Context, domain string) (core.Result, error) {
+	url := "https://crt.sh/?q=%25." + domain + "&output=json"
 
-    req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
-    if err != nil {
-        return nil, err
-    }
+	null := core.Result{}
 
-    resp, err := http.DefaultClient.Do(req)
-    if err != nil {
-        return nil, err
-    }
-    defer resp.Body.Close()
+	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
+	if err != nil {
+		return null, err
+	}
 
-    var entries []map[string]interface{}
-    if err := json.NewDecoder(resp.Body).Decode(&entries); err != nil {
-        return nil, err
-    }
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return null, err
+	}
+	defer resp.Body.Close()
 
-    seen := make(map[string]bool)
-    var results []core.Result
+	var entries []map[string]interface{}
+	if err := json.NewDecoder(resp.Body).Decode(&entries); err != nil {
+		return null, err
+	}
 
-    for _, entry := range entries {
-        raw, ok := entry["name_value"].(string)
-        if !ok {
-            continue
-        }
+	seen := make(map[string]bool)
+	var results []string
 
-        names := strings.Split(raw, "\n")
-        for _, sub := range names {
-            sub = strings.TrimSpace(sub)
+	for _, entry := range entries {
+		raw, ok := entry["name_value"].(string)
+		if !ok {
+			continue
+		}
 
-            if !IsValidSubdomain(sub, domain) {
-                continue
-            }
-            
-            if sub == "" || seen[sub] {
-                continue
-            }
+		names := strings.Split(raw, "\n")
+		for _, sub := range names {
+			sub = strings.TrimSpace(sub)
 
-            seen[sub] = true
+			if !IsValidSubdomain(sub, domain) {
+				continue
+			}
 
-            results = append(results, core.Result{
-                Scanner:  c.Name(),
-                Category: c.Category(),
-                Target:   domain,
-                Data: map[string]string{
-                    "subdomain": sub,
-                    "source":    "certificate_transparency",
-                },
-                Severity: "info",
-				Timestamp: time.Now(),
-            })
-        }
-    }
+			if sub == "" || seen[sub] {
+				continue
+			}
 
-    return results, nil
+			seen[sub] = true
+
+			results = append(results, sub)
+		}
+	}
+
+	crt_subdomains_found := core.Result{
+		Scanner:   c.Name(),
+		Category:  c.Category(),
+		Target:    domain,
+		Data:      results,
+		Severity:  "info",
+		Timestamp: time.Now(),
+	}
+
+	return crt_subdomains_found, nil
 }
