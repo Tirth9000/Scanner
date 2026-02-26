@@ -13,15 +13,15 @@ func NewRunner() *Runner {
 func (r *Runner) RunDiscoveryScanner(ctx context.Context,
 	scanner DiscoveryScanner,
 	target string,
-) (Result, error) {
+) (ScanResult, error) {
 	return scanner.RunDiscoveryScanner(ctx, target)
 }
 
 func (r *Runner) RunFilterScanners(ctx context.Context, 
 	scanner FilterScanner, 
-	subdomains Result,
+	subdomains ScanResult,
 	domain string,
-) (Result, error){
+) (ScanResult, error){
 	return scanner.RunFilterScanner(ctx, subdomains, domain)
 }
 

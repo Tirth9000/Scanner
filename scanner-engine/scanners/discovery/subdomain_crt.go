@@ -24,10 +24,13 @@ func (c *CrtCTScanner) Category() string {
 	return "discovery"
 }
 
-func (c *CrtCTScanner) RunDiscoveryScanner(ctx context.Context, domain string) (core.Result, error) {
+func (c *CrtCTScanner) RunDiscoveryScanner(
+	ctx context.Context, 
+	domain string,
+	) (core.ScanResult, error) {
 	url := "https://crt.sh/?q=%25." + domain + "&output=json"
 
-	null := core.Result{}
+	null := core.ScanResult{}
 
 	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
 	if err != nil {
@@ -72,12 +75,10 @@ func (c *CrtCTScanner) RunDiscoveryScanner(ctx context.Context, domain string) (
 		}
 	}
 
-	crt_subdomains_found := core.Result{
-		Scanner:   c.Name(),
-		Category:  c.Category(),
+	crt_subdomains_found := core.ScanResult{
+		ScanID: "1234",
 		Target:    domain,
 		Data:      results,
-		Severity:  "info",
 		Timestamp: time.Now(),
 	}
 

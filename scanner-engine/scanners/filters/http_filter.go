@@ -29,45 +29,42 @@ func (f *HTTPFilter) Category() string {
 
 func (f *HTTPFilter) RunFilterScanner(
 	ctx context.Context,
-	results []core.Result,
+	results core.ScanResult,
 	domain string,
-) ([]core.Result, error) {
+) (core.ScanResult, error) {
+	null := core.ScanResult{}
 
 	cmd := exec.CommandContext(ctx, "httpx", "-silent", "-json")
 
 	stdin, err := cmd.StdinPipe()
 	if err != nil {
-		return nil, err
+		return null, err
 	}
 
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {
-		return nil, err
+		return null, err
 	}
 
 	if err := cmd.Start(); err != nil {
-		return nil, err
+		return null, err
 	}
 
+	subdomains := results.Data.([]string)
 	// Feed subdomains safely
 	go func() {
 		defer stdin.Close()
-		for _, r := range results {
-			data, ok := r.Data.(map[string]string)
-			if !ok {
+		for _, subdomain := range subdomains {
+
+			if subdomain == "" {
 				continue
 			}
 
-			sub := data["subdomain"]
-			if sub == "" {
-				continue
-			}
-
-			fmt.Fprintln(stdin, sub)
+			fmt.Fprintln(stdin, subdomain)
 		}
 	}()
 
-	var live []core.Result
+	var live_subdomains []string
 	scanner := bufio.NewScanner(stdout)
 	scanner.Buffer(make([]byte, 1024), 1024*1024)
 
@@ -81,25 +78,21 @@ func (f *HTTPFilter) RunFilterScanner(
 			continue
 		}
 
-		// httpx already filters liveness — this is just safety
 		if hx.URL != "" && (hx.StatusCode == 200 || hx.StatusCode == 301 || hx.StatusCode == 302) {
-
-			live = append(live, core.Result{
-				Scanner:  f.Name(),
-				Category: f.Category(),
-				Target:   domain,
-				Data: map[string]string{
-					"subdomain": hx.URL,
-				},
-				Severity:  "info",
-				Timestamp: time.Now(),
-			})
+			live_subdomains = append(live_subdomains, hx.URL)
 		}
 	}
 
-	if err := cmd.Wait(); err != nil {
-		return live, err
+	http_filtered_subdomains := core.ScanResult{
+		ScanID: "1234",
+		Target: domain,
+		Data: live_subdomains,
+		Timestamp: time.Now(),
 	}
 
-	return live, nil
+	if err := cmd.Wait(); err != nil {
+		return http_filtered_subdomains, err
+	}
+
+	return http_filtered_subdomains, nil
 }
