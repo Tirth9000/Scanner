@@ -25,7 +25,7 @@ func (s *SubdomainBruteforceScanner) Category() string {
 
 func (s *SubdomainBruteforceScanner) RunDiscoveryScanner(
 	ctx context.Context, 
-	target string) (core.ScanResult, error) {
+	target string) (core.Result, error) {
 	wordlist := []string{
 		"www",
 		"api",
@@ -67,8 +67,9 @@ func (s *SubdomainBruteforceScanner) RunDiscoveryScanner(
 		}
 	}
 
-	brute_force_subdomains_found := core.ScanResult{
-		ScanID: "1234",
+	brute_force_subdomains_found := core.Result{
+		Scanner: s.Name(),
+		Category: s.Category(),
 		Target: target,
 		Data: results,
 		Timestamp: time.Now(),

@@ -29,10 +29,10 @@ func (f *HTTPFilter) Category() string {
 
 func (f *HTTPFilter) RunFilterScanner(
 	ctx context.Context,
-	results core.ScanResult,
+	results core.Result,
 	domain string,
-) (core.ScanResult, error) {
-	null := core.ScanResult{}
+) (core.Result, error) {
+	null := core.Result{}
 
 	cmd := exec.CommandContext(ctx, "httpx", "-silent", "-json")
 
@@ -83,8 +83,9 @@ func (f *HTTPFilter) RunFilterScanner(
 		}
 	}
 
-	http_filtered_subdomains := core.ScanResult{
-		ScanID: "1234",
+	http_filtered_subdomains := core.Result{
+		Scanner: f.Name(),
+		Category: f.Category(),
 		Target: domain,
 		Data: live_subdomains,
 		Timestamp: time.Now(),

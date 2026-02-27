@@ -82,13 +82,13 @@ func IsValidSubdomain(sub, domain string) bool {
 
 func (d *DedupFilter) RunFilterScanner(
 	ctx context.Context,
-	input core.ScanResult,
+	input core.Result,
 	domain string,
-) (core.ScanResult, error) {
+) (core.Result, error) {
 
 	seen := make(map[string]string)
 	normalized_subdomains := make([]string, 0)
-	null := core.ScanResult{}
+	null := core.Result{}
 
 	subdomains, ok := input.Data.([]string)
 	if !ok {
@@ -115,8 +115,9 @@ func (d *DedupFilter) RunFilterScanner(
 		normalized_subdomains = append(normalized_subdomains, normalized)
 	}
 
-    dedupted_subdomains := core.ScanResult{
-        ScanID: "1234",
+    dedupted_subdomains := core.Result{
+        Scanner: d.Name(),
+        Category: d.Category(),
         Target: domain,
         Data: normalized_subdomains,
         Timestamp: time.Now(),

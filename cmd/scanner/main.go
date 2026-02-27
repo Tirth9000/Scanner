@@ -29,7 +29,7 @@ func main() {
 
 	pipeline := core.NewDiscoveryPipeline(registry)
 
-	results, err := pipeline.Execute(ctx, domain_name)
+	results, err := pipeline.ExecuteDiscoveryScanner(ctx, domain_name)
 
 	if err != nil {
 		panic(err)
@@ -54,7 +54,7 @@ func main() {
 		panic(err)
 	}
 
-	fmt.Println("Total Filtered Subdomains Found:", len(filtered_results.Data.([]string)))
+	fmt.Println("Total Filtered Subdomains Found:", filtered_results.Data)
 
 	// fmt.Println("Scanner 3 : Data Collection")
 

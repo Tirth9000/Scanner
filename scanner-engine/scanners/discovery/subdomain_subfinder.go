@@ -26,8 +26,8 @@ func (s *SubdomainSubFinderScanner) Category() string {
 
 func (s * SubdomainSubFinderScanner) RunDiscoveryScanner(
 	ctx context.Context, 
-	domain string) (core.ScanResult, error) {
-	null := core.ScanResult{}
+	domain string) (core.Result, error) {
+	null := core.Result{}
 	cmd := exec.CommandContext(
 		ctx,
 		"subfinder",
@@ -78,8 +78,9 @@ func (s * SubdomainSubFinderScanner) RunDiscoveryScanner(
 		return null, err
 	}
 
-	subfinder_subdomains_found := core.ScanResult{
-		ScanID: "1234",
+	subfinder_subdomains_found := core.Result{
+		Scanner: s.Name(),
+		Category: s.Category(),
 		Target: domain,
 		Data: results,
 		Timestamp: time.Now(),

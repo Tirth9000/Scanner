@@ -19,12 +19,12 @@ func NewDiscoveryPipeline(registry *Registry) *DiscoveryPipeline {
 	}
 }
 
-func (p *DiscoveryPipeline) Execute(ctx context.Context, target string) (ScanResult, error) {
+func (p *DiscoveryPipeline) ExecuteDiscoveryScanner(ctx context.Context, target string) (Result, error) {
 	var results []string
 
 	ips, err := net.LookupIP(target)
 	if err != nil || len(ips) == 0 {
-		return ScanResult{}, err
+		return Result{}, err
 	}
 
 	fmt.Println("Starting discovery pipeline for target:", target)
@@ -42,14 +42,17 @@ func (p *DiscoveryPipeline) Execute(ctx context.Context, target string) (ScanRes
 		fmt.Println("Total results so far:", len(results))
 	}
 
-	subdomainsFound := ScanResult{
-		ScanID:    "1234",
+	discovered_subdomains := Result{
+		Scanner:   "discovery_pipeline",
+		Category:  "discovery",
 		Target:    target,
 		Data:      results,
 		Timestamp: time.Now(),
 	}
 
-	return subdomainsFound, nil
+	fmt.Println(discovered_subdomains)
+
+	return discovered_subdomains, nil
 }
 
 type FilterScannerPipeline struct {
@@ -64,7 +67,7 @@ func NewFilterPipeline(registry *FilterScannerRegistry) *FilterScannerPipeline {
 	}
 }
 
-func (p *FilterScannerPipeline) ExecuteFilterScanners(ctx context.Context, discovered_subdomains ScanResult, domain string) (ScanResult, error) {
+func (p *FilterScannerPipeline) ExecuteFilterScanners(ctx context.Context, discovered_subdomains Result, domain string) (Result, error) {
 	fmt.Println("Starting filter pipeline for domain:", domain)
 	subdomains := discovered_subdomains
 
@@ -81,15 +84,23 @@ func (p *FilterScannerPipeline) ExecuteFilterScanners(ctx context.Context, disco
 		subdomains = res
 	}
 
-	filtered_subdomains := ScanResult{
-		ScanID:    "1234",
+	var data []interface{}
+	var filter_structured_subdomains map[string]string
+	filter_structured_subdomains = make(map[string]string)
+
+	for _, subdomain := range subdomains.Data.([]string){
+		filter_structured_subdomains["subdomain"] = subdomain
+		data = append(data, filter_structured_subdomains)
+	}
+
+	filtered_subdomains := Result{
+		Scanner:   "filter_pipeline",
+		Category:  "filter",
 		Target:    domain,
-		Data:      subdomains.Data,
+		Data:      data,
 		Timestamp: time.Now(),
 	}
 
-	fmt.Println(filtered_subdomains)
-	fmt.Println(len(filtered_subdomains.Data.([]string)))
 	return filtered_subdomains, nil
 }
 
@@ -105,7 +116,7 @@ func NewCollectionPipeline(registry *CollectionScannerRegistry) *CollectionPipel
 	}
 }
 
-func (c *CollectionPipeline) ExecuteCollectionScanenrs(ctx context.Context, data_collected []Result, domain string) ([]Result, error) {
+func (c *CollectionPipeline) ExecuteCollectionScanenrs(ctx context.Context, data_collected Result, domain string) (Result, error) {
 	fmt.Println("Starting collection pipeline for domain:", domain)
 
 	for _, scanner := range c.registry.All() {
@@ -119,7 +130,7 @@ func (c *CollectionPipeline) ExecuteCollectionScanenrs(ctx context.Context, data
 
 		data_collected = res
 	}
-	fmt.Println("Total data collected so far:", len(data_collected))
+	// fmt.Println("Total data collected so far:", len(data_collected))
 
 	return data_collected, nil
 }

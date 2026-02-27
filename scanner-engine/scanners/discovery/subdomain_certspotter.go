@@ -29,8 +29,8 @@ func (c *CertSpotterCTScanner) Category() string {
 func (c *CertSpotterCTScanner) RunDiscoveryScanner(
 	ctx context.Context, 
 	domain string,
-	) (core.ScanResult, error) {
-	null := core.ScanResult{}
+	) (core.Result, error) {
+	null := core.Result{}
 
 	// CertSpotter API endpoint
 	url := "https://api.certspotter.com/v1/issuances?domain=" + domain +
@@ -102,8 +102,9 @@ func (c *CertSpotterCTScanner) RunDiscoveryScanner(
 		}
 	}
 
-	crt_spotter_subdomains_found := core.ScanResult{
-		ScanID: "1234",
+	crt_spotter_subdomains_found := core.Result{
+		Scanner: c.Name(),
+		Category: c.Category(),
 		Target: domain,
 		Data: results,
 		Timestamp: time.Now(),

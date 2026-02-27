@@ -27,10 +27,10 @@ func (f *DNSFilter) Category() string {
 
 func (f *DNSFilter) RunFilterScanner(
 	ctx context.Context, 
-	results core.ScanResult, 
+	results core.Result, 
 	domain string,
-	) (core.ScanResult, error) {
-	null := core.ScanResult{}
+	) (core.Result, error) {
+	null := core.Result{}
 	cmd := exec.CommandContext(
 		ctx,
 		"dnsx",
@@ -92,8 +92,9 @@ func (f *DNSFilter) RunFilterScanner(
 		return null, err
 	}
 
-	dns_filtered_subdomains := core.ScanResult{
-		ScanID: "1234",
+	dns_filtered_subdomains := core.Result{
+		Scanner: f.Name(),
+		Category: f.Category(),
 		Target:    domain,
 		Data:      resolved,
 		Timestamp: time.Now(),
