@@ -70,7 +70,7 @@ func (f *HTTPFilter) RunFilterScanner(
 
 	for scanner.Scan() {
 		var hx struct {
-			URL        string `json:"url"`
+			Host       string `json:"host"`
 			StatusCode int    `json:"status_code"`
 		}
 
@@ -78,8 +78,8 @@ func (f *HTTPFilter) RunFilterScanner(
 			continue
 		}
 
-		if hx.URL != "" && (hx.StatusCode == 200 || hx.StatusCode == 301 || hx.StatusCode == 302) {
-			live_subdomains = append(live_subdomains, hx.URL)
+		if hx.Host != "" && (hx.StatusCode == 200 || hx.StatusCode == 301 || hx.StatusCode == 302) {
+			live_subdomains = append(live_subdomains, hx.Host)
 		}
 	}
 

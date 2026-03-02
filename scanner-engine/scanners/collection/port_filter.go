@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os/exec"
+	"time"
 
 	"scanner-platform/scanner-engine/core"
 )
@@ -26,10 +27,11 @@ func (f *PortFilter) Category() string {
 
 func (f *PortFilter) RunCollectionScanner(
 	ctx context.Context,
-	results []core.Result,
+	subdomains core.Result,
 	domain string,
-) ([]core.Result, error) {
+) (core.Result, error) {
 
+	null := core.Result{}
 	cmd := exec.CommandContext(
 		ctx,
 		"naabu",
@@ -43,21 +45,21 @@ func (f *PortFilter) RunCollectionScanner(
 
 	stdin, err := cmd.StdinPipe()
 	if err != nil {
-		return nil, err
+		return null, err
 	}
 
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {
-		return nil, err
+		return null, err
 	}
 
 	stderr, err := cmd.StderrPipe()
 	if err != nil {
-		return nil, err
+		return null, err
 	}
 
 	if err := cmd.Start(); err != nil {
-		return nil, err
+		return null, err
 	}
 
 	go func() {
@@ -70,14 +72,9 @@ func (f *PortFilter) RunCollectionScanner(
 	go func() {
 		defer stdin.Close()
 
-		for _, r := range results {
-			data, ok := r.Data.(map[string]any)
-			fmt.Println(r.Data)
-			if !ok {
-				continue
-			}
+		for _, subdomain := range subdomains.Data.([]interface{}) {
 
-			sub := data["subdomain"]
+			sub := subdomain.(map[string]any)["subdomain"]
 
 			if sub == "" {
 				continue
@@ -90,39 +87,60 @@ func (f *PortFilter) RunCollectionScanner(
 	scanner := bufio.NewScanner(stdout)
 	scanner.Buffer(make([]byte, 1024), 1024*1024)
 
+	
+	subSlice := subdomains.Data.([]interface{})
+	index := make(map[string]map[string]any)
+	
+	for _, item := range subSlice {
+		m := item.(map[string]any)
+		
+		sub := m["subdomain"].(string)
+		index[sub] = m
+	}
+	
 	portMap := make(map[string][]core.PortData)
+	portSeen := make(map[string]map[string]struct{}) // host -> "port/proto" set
 
 	for scanner.Scan() {
 		var out core.NaabuOutput
 
 		if err := json.Unmarshal(scanner.Bytes(), &out); err != nil {
-			return nil, err
+			return null, err
 		}
 
+		// Initialize set for host if not exists
+		if _, ok := portSeen[out.Host]; !ok {
+			portSeen[out.Host] = make(map[string]struct{})
+		}
+
+		// Create unique key
+		key := fmt.Sprintf("%d/%s", out.Port, out.Protocol)
+
+		// Check if already seen
+		if _, exists := portSeen[out.Host][key]; exists {
+			continue // skip duplicate
+		}
+
+		// Mark as seen
+		portSeen[out.Host][key] = struct{}{}
+
+		// Append to slice
 		portMap[out.Host] = append(portMap[out.Host], core.PortData{
 			Port:     out.Port,
 			Protocol: out.Protocol,
 		})
 
+		if existing, ok := index[out.Host]; ok {
+			existing["port_collection"] = portMap[out.Host]
+		}
 	}
 
-	for _, r := range results {
-		data, ok := r.Data.(map[string]any)
-		if !ok {
-			continue
-		}
-
-		sub, ok := data["subdomain"].(string)
-		if !ok || sub == "" {
-			continue
-		}
-
-		ports, exists := portMap[sub]
-		if !exists {
-			continue
-		}
-
-		data["ports"] = ports
+	results := core.Result{
+		Scanner:   f.Name(),
+		Category:  f.Category(),
+		Target:    domain,
+		Data:      subdomains.Data,
+		Timestamp: time.Now(),
 	}
 
 	return results, nil

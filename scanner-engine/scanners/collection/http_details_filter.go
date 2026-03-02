@@ -72,13 +72,15 @@ func (f *HTTPXFilterOutput) RunCollectionScanner(
 	go func() {
 		defer stdin.Close()
 
-		for _, subdomain := range subdomains.Data.([]string) {
+		for _, subdomain := range subdomains.Data.([]interface{}) {
 
-			if subdomain == "" {
+			sub := subdomain.(map[string]any)["subdomain"]
+
+			if sub == "" {
 				continue
 			}
 
-			fmt.Fprintln(stdin, subdomain)
+			fmt.Fprintln(stdin, sub)
 		}
 	}()
 
@@ -86,10 +88,18 @@ func (f *HTTPXFilterOutput) RunCollectionScanner(
 		io.Copy(os.Stderr, stderr)
 	}()
 
-	var httpData map[string]any
-
 	scanner := bufio.NewScanner(stdout)
 	scanner.Buffer(make([]byte, 1024), 1024*1024)
+
+	subSlice := subdomains.Data.([]interface{})
+	index := make(map[string]map[string]any)
+
+	for _, item := range subSlice {
+		m := item.(map[string]any)
+
+		sub := m["subdomain"].(string)
+		index[sub] = m
+	}
 
 	for scanner.Scan() {
 		var hx struct {
@@ -135,25 +145,17 @@ func (f *HTTPXFilterOutput) RunCollectionScanner(
 		data.Metadata.ContentLength = hx.ContentLength
 		data.Metadata.ResponseTimeMs = hx.Time
 
-		// httpData = append(httpData, core.Result{
-		// 	Scanner:  f.Name(),
-		// 	Category: f.Category(),
-		// 	Target:   target,
-		// 	Data: map[string]any{
-		// 		"subdomain": hx.Host,
-		// 		"http_data": data,
-		// 	},
-		// 	Severity:  "info",
-		// 	Timestamp: time.Now(),
-		// })
+		if existing, ok := index[hx.Host]; ok {
+			existing["http_collection"] = data
+		}
 	}
 
 	http_collection_data := core.Result{
-		Scanner: f.Name(),
-		Category: f.Category(),
+		Scanner:   f.Name(),
+		Category:  f.Category(),
 		Target:    target,
-		Data:      httpData,
-		Timestamp: time.Now(),	
+		Data:      subdomains.Data,
+		Timestamp: time.Now(),
 	}
 
 	if err := scanner.Err(); err != nil {

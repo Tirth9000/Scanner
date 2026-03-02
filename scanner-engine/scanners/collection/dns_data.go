@@ -8,7 +8,7 @@ import (
 	"io"
 	"os"
 	"os/exec"
-	"time"
+	// "time"
 
 	"scanner-platform/scanner-engine/core"
 )
@@ -29,9 +29,13 @@ func (f *DNSDataOutput) Category() string {
 
 func (f *DNSDataOutput) RunCollectionScanner(
 	ctx context.Context,
-	subdomains []core.Result,
+	subdomains core.Result,
 	target string,
-) ([]core.Result, error) {
+) (core.Result, error) {
+	null := core.Result{}
+
+	subdomainsList := subdomains.Data.([]interface{})
+
 	cmd := exec.Command(
 		"dnsx",
 		"-json",
@@ -47,33 +51,29 @@ func (f *DNSDataOutput) RunCollectionScanner(
 
 	stdin, err := cmd.StdinPipe()
 	if err != nil {
-		return nil, err
+		return null, err
 	}
 
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {
-		return nil, err
+		return null, err
 	}
 
 	stderr, err := cmd.StderrPipe()
 	if err != nil {
-		return nil, err
+		return null, err
 	}
 
 	if err := cmd.Start(); err != nil {
-		return nil, err
+		return null, err
 	}
 
 	go func() {
 		defer stdin.Close()
 
-		for _, r := range subdomains {
-			data, ok := r.Data.(map[string]any)
-			if !ok {
-				continue
-			}
+		for _, subdomain := range subdomainsList {
+			sub := subdomain.(map[string]any)["subdomain"]
 
-			sub := data["subdomain"]
 			if sub == "" {
 				continue
 			}
@@ -86,7 +86,15 @@ func (f *DNSDataOutput) RunCollectionScanner(
 		io.Copy(os.Stderr, stderr)
 	}()
 
-	var DnsData []core.Result
+	subSlice := subdomains.Data.([]interface{})
+	index := make(map[string]map[string]any)
+
+	for _, item := range subSlice {
+		m := item.(map[string]any)
+		sub := m["subdomain"].(string)
+		index[sub] = m
+	}
+
 
 	scanner := bufio.NewScanner(stdout)
 	scanner.Buffer(make([]byte, 1024), 1024*1024)
@@ -98,15 +106,18 @@ func (f *DNSDataOutput) RunCollectionScanner(
 			continue
 		}
 
-		DnsData = append(DnsData, core.Result{
-			Scanner:   f.Name(),
-			Category:  f.Category(),
-			Target:    dd.Host,
-			Data:      dd,
-			Timestamp: time.Now(),
-		})
-
+		if existing, ok := index[dd.Host]; ok {
+			existing["dns_collection"] = dd
+		}
 	}
 
-	return DnsData, nil
+	dnsResult := core.Result{
+		Scanner:   f.Name(),
+		Category:  f.Category(),
+		Target:    target,
+		Data:      subdomains.Data,
+		Timestamp: subdomains.Timestamp,
+	}
+
+	return dnsResult, nil
 }
