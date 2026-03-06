@@ -14,4 +14,4 @@ COPY go.mod go.sum ./
 RUN go mod download
 
 
-CMD ["go", "run", "cmd/worker/main.go"]
+CMD ["go", "run", "cmd/scanner/main.go"]

@@ -99,7 +99,7 @@ func (f *PortFilter) RunCollectionScanner(
 	}
 	
 	portMap := make(map[string][]core.PortData)
-	portSeen := make(map[string]map[string]struct{}) // host -> "port/proto" set
+	portSeen := make(map[string]map[string]struct{}) 
 
 	for scanner.Scan() {
 		var out core.NaabuOutput
@@ -108,23 +108,18 @@ func (f *PortFilter) RunCollectionScanner(
 			return null, err
 		}
 
-		// Initialize set for host if not exists
 		if _, ok := portSeen[out.Host]; !ok {
 			portSeen[out.Host] = make(map[string]struct{})
 		}
 
-		// Create unique key
 		key := fmt.Sprintf("%d/%s", out.Port, out.Protocol)
 
-		// Check if already seen
 		if _, exists := portSeen[out.Host][key]; exists {
-			continue // skip duplicate
+			continue 
 		}
 
-		// Mark as seen
 		portSeen[out.Host][key] = struct{}{}
 
-		// Append to slice
 		portMap[out.Host] = append(portMap[out.Host], core.PortData{
 			Port:     out.Port,
 			Protocol: out.Protocol,

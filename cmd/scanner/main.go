@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	// "time"
+	"encoding/json"
 	"fmt"
 
 	"scanner-platform/scanner-engine/core"
@@ -14,7 +14,8 @@ import (
 func main() {
 	ctx := context.Background()
 	// domain_name := "vulnweb.com"
-	domain_name := "officebeacon.com"
+	// domain_name := "officebeacon.com"
+	domain_name := "allianzcloud.com"
 
 	fmt.Println("Starting scanning for domain:", domain_name)
 	fmt.Println("Scanner 1 : Subdomain Discovery")
@@ -64,7 +65,7 @@ func main() {
 	collection_registry.RegisterCollectionScanner(collection.NewDNSDataOutput())
 	collection_registry.RegisterCollectionScanner(collection.NewHTTPXFilterOutput())
 	collection_registry.RegisterCollectionScanner(collection.NewPortFilter())
-	// collection_registry.RegisterCollectionScanner(collection.NewTLSDataCollection())
+	collection_registry.RegisterCollectionScanner(collection.NewTLSDataCollection())
 
 	collection_pipeline := core.NewCollectionPipeline(collection_registry)
 
@@ -89,7 +90,14 @@ func main() {
 	// fmt.Println("Final Results:")
 	// fmt.Println(scanResult)
 	for _, r := range collection_pipeline_results.Data.([]interface{}) {
-		fmt.Printf("%+v\n", r)
+
+	data, err := json.MarshalIndent(r, "", "  ")
+	if err != nil {
+		fmt.Println("error:", err)
+		continue
 	}
+
+	fmt.Println(string(data))
+}
 	// fmt.Println("Total Results Found:", collection_pipeline_results)
 }
