@@ -26,14 +26,19 @@ func (c *CertSpotterCTScanner) Category() string {
 }
 
 
-func (c *CertSpotterCTScanner) Run(ctx context.Context, domain string) ([]core.Result, error) {
+func (c *CertSpotterCTScanner) RunDiscoveryScanner(
+	ctx context.Context, 
+	domain string,
+	) (core.Result, error) {
+	null := core.Result{}
+
 	// CertSpotter API endpoint
 	url := "https://api.certspotter.com/v1/issuances?domain=" + domain +
 		"&include_subdomains=true&expand=dns_names"
 
 	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
 	if err != nil {
-		return nil, err
+		return null, err
 	}
 
 	// Required headers
@@ -46,12 +51,12 @@ func (c *CertSpotterCTScanner) Run(ctx context.Context, domain string) ([]core.R
 
 	resp, err := client.Do(req)
 	if err != nil {
-		return nil, err
+		return null, err
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("certspotter returned status %d", resp.StatusCode)
+		return null, fmt.Errorf("certspotter returned status %d", resp.StatusCode)
 	}
 
 	// CertSpotter response structure
@@ -61,15 +66,15 @@ func (c *CertSpotterCTScanner) Run(ctx context.Context, domain string) ([]core.R
 
 	var entries []certEntry
 	if err := json.NewDecoder(resp.Body).Decode(&entries); err != nil {
-		return nil, err
+		return null, err
 	}
 
 	if len(entries) == 0 {
-		return nil, fmt.Errorf("certspotter returned empty response")
+		return null, fmt.Errorf("certspotter returned empty response")
 	}
 
 	seen := make(map[string]bool)
-	var results []core.Result
+	var results []string
 
 	for _, entry := range entries {
 		for _, sub := range entry.DNSNames {
@@ -81,19 +86,29 @@ func (c *CertSpotterCTScanner) Run(ctx context.Context, domain string) ([]core.R
 
 			seen[sub] = true
 
-			results = append(results, core.Result{
-				Scanner:  c.Name(),
-				Category: c.Category(),
-				Target:   domain,
-				Data: map[string]string{
-					"subdomain": sub,
-					"source": "certspotter",
-				},
-				Severity:  "info",
-				Timestamp: time.Now(),
-			})
+			results = append(results, sub)
+
+			// results = append(results, core.Result{
+			// 	Scanner:  c.Name(),
+			// 	Category: c.Category(),
+			// 	Target:   domain,
+			// 	Data: map[string]string{
+			// 		"subdomain": sub,
+			// 		"source": "certspotter",
+			// 	},
+			// 	Severity:  "info",
+			// 	Timestamp: time.Now(),
+			// })
 		}
 	}
 
-	return results, nil
+	crt_spotter_subdomains_found := core.Result{
+		Scanner: c.Name(),
+		Category: c.Category(),
+		Target: domain,
+		Data: results,
+		Timestamp: time.Now(),
+	}
+
+	return crt_spotter_subdomains_found, nil
 }

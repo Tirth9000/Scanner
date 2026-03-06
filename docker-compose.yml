@@ -15,7 +15,3 @@ services:
 networks:
   scanner-network:
     external: true
-  
-
-
-

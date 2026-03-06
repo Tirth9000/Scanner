@@ -38,9 +38,10 @@ func extractHost(raw string) string {
 
 func (f *HTTPXFilterOutput) RunCollectionScanner(
 	ctx context.Context,
-	subdomains []core.Result,
+	subdomains core.Result,
 	target string,
-) ([]core.Result, error) {
+) (core.Result, error) {
+	null := core.Result{}
 
 	cmd := exec.CommandContext(
 		ctx,
@@ -51,33 +52,30 @@ func (f *HTTPXFilterOutput) RunCollectionScanner(
 
 	stdin, err := cmd.StdinPipe()
 	if err != nil {
-		return nil, err
+		return null, err
 	}
 
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {
-		return nil, err
+		return null, err
 	}
 
 	stderr, err := cmd.StderrPipe()
 	if err != nil {
-		return nil, err
+		return null, err
 	}
 
 	if err := cmd.Start(); err != nil {
-		return nil, err
+		return null, err
 	}
 
 	go func() {
 		defer stdin.Close()
 
-		for _, r := range subdomains {
-			data, ok := r.Data.(map[string]string)
-			if !ok {
-				continue
-			}
+		for _, subdomain := range subdomains.Data.([]interface{}) {
 
-			sub := data["subdomain"]
+			sub := subdomain.(map[string]any)["subdomain"]
+
 			if sub == "" {
 				continue
 			}
@@ -90,10 +88,18 @@ func (f *HTTPXFilterOutput) RunCollectionScanner(
 		io.Copy(os.Stderr, stderr)
 	}()
 
-	var httpData []core.Result
-
 	scanner := bufio.NewScanner(stdout)
 	scanner.Buffer(make([]byte, 1024), 1024*1024)
+
+	subSlice := subdomains.Data.([]interface{})
+	index := make(map[string]map[string]any)
+
+	for _, item := range subSlice {
+		m := item.(map[string]any)
+
+		sub := m["subdomain"].(string)
+		index[sub] = m
+	}
 
 	for scanner.Scan() {
 		var hx struct {
@@ -139,26 +145,26 @@ func (f *HTTPXFilterOutput) RunCollectionScanner(
 		data.Metadata.ContentLength = hx.ContentLength
 		data.Metadata.ResponseTimeMs = hx.Time
 
-		httpData = append(httpData, core.Result{
-			Scanner:  f.Name(),
-			Category: f.Category(),
-			Target:   target,
-			Data: map[string]any{
-				"subdomain": hx.Host,
-				"http_data": data,
-			},
-			Severity:  "info",
-			Timestamp: time.Now(),
-		})
+		if existing, ok := index[hx.Host]; ok {
+			existing["http_collection"] = data
+		}
+	}
+
+	http_collection_data := core.Result{
+		Scanner:   f.Name(),
+		Category:  f.Category(),
+		Target:    target,
+		Data:      subdomains.Data,
+		Timestamp: time.Now(),
 	}
 
 	if err := scanner.Err(); err != nil {
-		return httpData, err
+		return http_collection_data, err
 	}
 
 	if err := cmd.Wait(); err != nil {
-		return httpData, err
+		return http_collection_data, err
 	}
 
-	return httpData, nil
+	return http_collection_data, nil
 }

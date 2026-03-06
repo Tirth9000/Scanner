@@ -25,7 +25,12 @@ func (f *DNSFilter) Category() string {
 	return "FilterScanner"
 }
 
-func (f *DNSFilter) RunFilterScanner(ctx context.Context, results []core.Result, domain string) ([]core.Result, error) {
+func (f *DNSFilter) RunFilterScanner(
+	ctx context.Context, 
+	results core.Result, 
+	domain string,
+	) (core.Result, error) {
+	null := core.Result{}
 	cmd := exec.CommandContext(
 		ctx,
 		"dnsx",
@@ -35,21 +40,21 @@ func (f *DNSFilter) RunFilterScanner(ctx context.Context, results []core.Result,
 
 	stdin, err := cmd.StdinPipe()
 	if err != nil {
-		return nil, err
+		return null, err
 	}
 
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {
-		return nil, err
+		return null, err
 	}
 
 	stderr, err := cmd.StderrPipe()
 	if err != nil {
-		return nil, err
+		return null, err
 	}
 
 	if err := cmd.Start(); err != nil {
-		return nil, err
+		return null, err
 	}
 
 	go func() {
@@ -59,41 +64,41 @@ func (f *DNSFilter) RunFilterScanner(ctx context.Context, results []core.Result,
 		}
 	}()
 
+	subdomains := results.Data.([]string)
+
 	go func() {
 		defer stdin.Close()
-		for _, sub := range results {
-			sub.Data.(map[string]string)["subdomain"] = strings.TrimSpace(sub.Data.(map[string]string)["subdomain"] )
-			if sub.Data.(map[string]string)["subdomain"]  != "" {
-				fmt.Fprintln(stdin, sub.Data.(map[string]string)["subdomain"])
+		for _, sub := range subdomains {
+			sub = strings.TrimSpace(sub)
+			if sub != "" {
+				fmt.Fprintln(stdin, sub)
 			}
 		}
 	}()
 
-	var resolved []core.Result
+	var resolved []string
 	scanner := bufio.NewScanner(stdout)
 	scanner.Buffer(make([]byte, 1024), 1024*1024)
 
 	for scanner.Scan() {
-		resolved = append(resolved, core.Result{
-			Scanner:  "DNSX Filter",
-			Category: "discovery",
-			Target:   domain,
-			Data: map[string]string{
-				"method":    "dnsx Filter",
-				"subdomain": scanner.Text(),
-			},
-			Severity:  "info",
-			Timestamp: time.Now(),
-		})
+		resolved = append(resolved, scanner.Text())
 	}
 
 	if err := scanner.Err(); err != nil {
-		return nil, err
+		return null, err
 	}
 
 	if err := cmd.Wait(); err != nil {
-		return nil, err
+		return null, err
 	}
 
-	return resolved, nil
+	dns_filtered_subdomains := core.Result{
+		Scanner: f.Name(),
+		Category: f.Category(),
+		Target:    domain,
+		Data:      resolved,
+		Timestamp: time.Now(),
+	}
+
+	return dns_filtered_subdomains, nil
 }

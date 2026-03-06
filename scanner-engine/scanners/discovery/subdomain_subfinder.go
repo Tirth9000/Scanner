@@ -24,7 +24,10 @@ func (s *SubdomainSubFinderScanner) Category() string {
 	return "discovery"
 }
 
-func (s * SubdomainSubFinderScanner) Run(ctx context.Context, domain string) ([]core.Result, error) {
+func (s * SubdomainSubFinderScanner) RunDiscoveryScanner(
+	ctx context.Context, 
+	domain string) (core.Result, error) {
+	null := core.Result{}
 	cmd := exec.CommandContext(
 		ctx,
 		"subfinder",
@@ -34,16 +37,16 @@ func (s * SubdomainSubFinderScanner) Run(ctx context.Context, domain string) ([]
 
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {
-		return nil, err
+		return null, err
 	}
 
 	if err := cmd.Start(); err != nil {
-		return nil, err
+		return null, err
 	}
 
 	scanner := bufio.NewScanner(stdout)
 	seen := make(map[string]struct{})
-	var results []core.Result
+	var results []string
 
 	for scanner.Scan() {
 		sub := strings.TrimSpace(scanner.Text())
@@ -57,22 +60,31 @@ func (s * SubdomainSubFinderScanner) Run(ctx context.Context, domain string) ([]
 		}
 		seen[sub] = struct{}{}
 
-		results = append(results, core.Result{
-			Scanner:  "subdomain_subfinder",
-			Category: "discovery",
-			Target:   domain,
-			Data: map[string]string{
-				"method":    "subfinder",
-				"subdomain": sub,
-			},
-			Severity:  "info",
-			Timestamp: time.Now(),
-		})
+		results = append(results, sub)
+		// results = append(results, core.Result{
+		// 	Scanner:  "subdomain_subfinder",
+		// 	Category: "discovery",
+		// 	Target:   domain,
+		// 	Data: map[string]string{
+		// 		"method":    "subfinder",
+		// 		"subdomain": sub,
+		// 	},
+		// 	Severity:  "info",
+		// 	Timestamp: time.Now(),
+		// })
 	}
 
 	if err := cmd.Wait(); err != nil {
-		return nil, err
+		return null, err
 	}
 
-	return results, nil
+	subfinder_subdomains_found := core.Result{
+		Scanner: s.Name(),
+		Category: s.Category(),
+		Target: domain,
+		Data: results,
+		Timestamp: time.Now(),
+	}
+
+	return subfinder_subdomains_found, nil
 }
