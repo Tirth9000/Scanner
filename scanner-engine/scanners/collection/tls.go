@@ -5,9 +5,9 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"strings"
-	"strconv"
 	"os/exec"
+	"strconv"
+	"strings"
 	"time"
 
 	"scanner-platform/scanner-engine/core"
@@ -29,13 +29,13 @@ func (f *TLSDataCollection) Category() string {
 
 func isTLSCandidate(port int) bool {
 	tlsPorts := map[int]bool{
-		443: true,
+		443:  true,
 		8443: true,
 		9443: true,
-		993: true,
-		995: true,
-		465: true,
-		587: true,
+		993:  true,
+		995:  true,
+		465:  true,
+		587:  true,
 	}
 	return tlsPorts[port]
 }
@@ -51,127 +51,136 @@ func detectWildcard(sans []string) bool {
 
 func (f *TLSDataCollection) RunCollectionScanner(
 	ctx context.Context,
-	results []core.Result,
+	subdomains core.Result,
 	domain string,
-) ([]core.Result, error) {
+) (core.Result, error) {
 
-	cmd := exec.CommandContext(ctx,
+	null := core.Result{}
+
+	cmd := exec.CommandContext(
+		ctx,
 		"tlsx",
-		"-json",
 		"-silent",
-		"-san",
-		"-cn",
-		"-issuer",
-		"-fingerprint",
-		"-version",
+		"-json",
+		"-jarm",
+		"-tls-version",
 		"-cipher",
-		"-expiry",
 	)
 
 	stdin, err := cmd.StdinPipe()
 	if err != nil {
-		return nil, err
+		return null, err
 	}
 
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {
-		return nil, err
+		return null, err
 	}
 
 	if err := cmd.Start(); err != nil {
-		return nil, err
+		return null, err
 	}
 
-	// Feed TLS candidate ports
 	go func() {
 		defer stdin.Close()
 
-		for _, r := range results {
-			data, ok := r.Data.(map[string]any)
-			if !ok {
+		for _, item := range subdomains.Data.([]interface{}) {
+			m := item.(map[string]any)
+			// fmt.Println(m)
+
+			host := m["subdomain"].(string)
+			ports := m["port_collection"]
+
+			if ports == nil {
 				continue
 			}
 
-			subdomain, _ := data["subdomain"].(string)
-			ports, ok := data["ports"].([]core.PortData)
-			if !ok || subdomain == "" {
-				continue
-			}
-
-			for _, p := range ports {
-				// Scan common TLS ports only
-				if isTLSCandidate(p.Port) {
-					fmt.Fprintf(stdin, "%s:%d\n", subdomain, p.Port)
-				}
+			for _, p := range ports.([]core.PortData) {
+				fmt.Fprintf(stdin, "%s:%d\n", host, p.Port)
+				// if p.Port == 443 || p.Port == 8443 || p.Port == 993 || p.Port == 465 {
+				// }
 			}
 		}
 	}()
 
-	// Collect TLS results
-	tlsMap := make(map[string]map[int]core.TLSXOutput)
-
 	scanner := bufio.NewScanner(stdout)
-	scanner.Buffer(make([]byte, 1024), 1024*1024)
 
 	for scanner.Scan() {
+
 		var out core.TLSXOutput
 		if err := json.Unmarshal(scanner.Bytes(), &out); err != nil {
 			continue
 		}
 
-		portInt, err := strconv.Atoi(out.Port)
-		if err != nil {
-			continue
+		host := out.Host
+		portStr := out.Port
+		port, _ := strconv.Atoi(portStr)
+
+		// expired := false
+		// if v, ok := out["expired"].(bool); ok {
+		// 	expired = v
+		// }
+
+		// selfSigned := false
+		// if v, ok := out["self_signed"].(bool); ok {
+		// 	selfSigned = v
+		// }
+
+		// wildcard := false
+		// if v, ok := out["wildcard_certificate"].(bool); ok {
+		// 	wildcard = v
+		// }
+
+		notAfter, err := time.Parse(time.RFC3339, out.NotAfter)
+
+		expired := false
+		if err == nil {
+			expired = time.Now().After(notAfter)
 		}
 
-		if _, ok := tlsMap[out.Host]; !ok {
-			tlsMap[out.Host] = make(map[int]core.TLSXOutput)
+		tlsData := &core.TLSData{
+			Enabled:     out.ProbeStatus,
+			Version:     out.TLSVersion,
+			Cipher:      out.Cipher,
+			Issuer:      out.IssuerDN,
+			Subject:     out.SubjectDN,
+			NotBefore:   out.NotBefore,
+			NotAfter:    out.NotAfter,
+			Expired:     expired,
+			SelfSigned:  out.SubjectCN == out.IssuerCN,
+			Wildcard:    out.WildcardCertificate,
+			SAN:         out.SubjectAN,
+			JARM:        out.JARMHash,
+			Fingerprint: out.FingerprintHash.SHA256,
 		}
+		// fmt.Println(tlsData)
 
-		tlsMap[out.Host][portInt] = out
-	}
+		// Attach TLS to correct port
+		for _, item := range subdomains.Data.([]interface{}) {
+			m := item.(map[string]any)
 
-	// Attach TLS to ports
-	for i := range results {
+			if m["subdomain"] != host {
+				continue
+			}
 
-		data, ok := results[i].Data.(map[string]any)
-		if !ok {
-			continue
-		}
+			ports := m["port_collection"].([]core.PortData)
 
-		subdomain, _ := data["subdomain"].(string)
-		ports, ok := data["ports"].([]core.PortData)
-		if !ok || subdomain == "" {
-			continue
-		}
-
-		for j := range ports {
-
-			if hostTLS, ok := tlsMap[subdomain]; ok {
-
-				if tlsOut, ok := hostTLS[ports[j].Port]; ok {
-
-					tlsInfo := &core.TLSInfo{
-						Version:   tlsOut.TLSVersion,
-						Cipher:    tlsOut.Cipher,
-						ValidFrom: tlsOut.NotBefore,
-						ValidTo:   tlsOut.NotAfter,
-						Expired:   time.Now().After(tlsOut.NotAfter),
-						IssuerCN:  tlsOut.IssuerCN,
-						SubjectCN: tlsOut.SubjectCN,
-						SAN:       tlsOut.SubjectAN,
-						SHA256Fingerprint: tlsOut.Fingerprint.SHA256,
-						Wildcard:  detectWildcard(tlsOut.SubjectAN),
-					}
-
-					ports[j].TLS = tlsInfo
+			for i := range ports {
+				if ports[i].Port == port {
+					ports[i].TLS = tlsData
 				}
 			}
-		}
 
-		data["ports"] = ports
-		results[i].Data = data
+			m["port_collection"] = ports
+		}
+	}
+	tlsResult := core.Result{
+		Scanner:   f.Name(),
+		Category:  f.Category(),
+		Target:    domain,
+		Data:      subdomains.Data,
+		Timestamp: time.Now(),
 	}
 
-	return results, nil
+	return tlsResult, nil
 }

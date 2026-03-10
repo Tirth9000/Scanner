@@ -55,36 +55,35 @@ type HTTPScanData struct {
 	} `json:"metadata"`
 }
 
-
 type SOARecord struct {
-    Name    string `json:"name"`
-    NS      string `json:"ns"`
-    Mailbox string `json:"mailbox"`
-    Serial  int64  `json:"serial"`
-    Refresh int64  `json:"refresh"`
-    Retry   int64  `json:"retry"`
-    Expire  int64  `json:"expire"`
-    Minttl  int64  `json:"minttl"`
+	Name    string `json:"name"`
+	NS      string `json:"ns"`
+	Mailbox string `json:"mailbox"`
+	Serial  int64  `json:"serial"`
+	Refresh int64  `json:"refresh"`
+	Retry   int64  `json:"retry"`
+	Expire  int64  `json:"expire"`
+	Minttl  int64  `json:"minttl"`
 }
 
 type DNSXResult struct {
-    Host       string   `json:"host"`
-    TTL        int      `json:"ttl"`
-    Resolver   []string `json:"resolver"`
+	Host     string   `json:"host"`
+	TTL      int      `json:"ttl"`
+	Resolver []string `json:"resolver"`
 
-    A          []string `json:"a"`
-    AAAA       []string `json:"aaaa"`
-    CNAME      []string `json:"cname,omitempty"`
-    MX         []string `json:"mx"`
-    NS         []string `json:"ns"`
-    TXT        []string `json:"txt"`
+	A     []string `json:"a"`
+	AAAA  []string `json:"aaaa"`
+	CNAME []string `json:"cname,omitempty"`
+	MX    []string `json:"mx"`
+	NS    []string `json:"ns"`
+	TXT   []string `json:"txt"`
 
-    SOA        []SOARecord `json:"soa"`
+	SOA []SOARecord `json:"soa"`
 
-    All        []string `json:"all"`
+	All []string `json:"all"`
 
-    StatusCode string   `json:"status_code"`
-    Timestamp  string   `json:"timestamp"`
+	StatusCode string `json:"status_code"`
+	Timestamp  string `json:"timestamp"`
 }
 
 type NaabuOutput struct {
@@ -108,40 +107,55 @@ type NaabuOutput struct {
 // }
 
 type PortData struct {
-    Port     int       `json:"port"`
-    Protocol string    `json:"protocol"`
-    Service  string    `json:"service,omitempty"`
-    TLS      *TLSInfo  `json:"tls,omitempty"`
+	Port     int      `json:"port"`
+	Protocol string   `json:"protocol"`
+	Service  string   `json:"service,omitempty"`
+	TLS      *TLSData `json:"tls,omitempty"`
 }
 
-type TLSInfo struct {
-    Version            string    `json:"version"`
-    Cipher             string    `json:"cipher"`
-    ValidFrom          time.Time `json:"valid_from"`
-    ValidTo            time.Time `json:"valid_to"`
-    Expired            bool      `json:"expired"`
-    IssuerCN           string    `json:"issuer_cn"`
-    SubjectCN          string    `json:"subject_cn"`
-    SAN                []string  `json:"san"`
-    SHA256Fingerprint  string    `json:"sha256_fingerprint"`
-    Wildcard           bool      `json:"wildcard"`
+type TLSData struct {
+	Enabled     bool     `json:"enabled"`
+	Version     string   `json:"version"`
+	Cipher      string   `json:"cipher"`
+	Issuer      string   `json:"issuer"`
+	Subject     string   `json:"subject"`
+	NotBefore   string   `json:"not_before"`
+	NotAfter    string   `json:"not_after"`
+	Expired     bool     `json:"expired"`
+	SelfSigned  bool     `json:"self_signed"`
+	Wildcard    bool     `json:"wildcard"`
+	SAN         []string `json:"san"`
+	JARM        string   `json:"jarm"`
+	Fingerprint string   `json:"fingerprint"`
 }
 
 // core/tlsx_raw.go
 
 type TLSXOutput struct {
-    Host       string `json:"host"`
-    Port       string `json:"port"`
-    TLSVersion string `json:"tls_version"`
-    Cipher     string `json:"cipher"`
-    NotBefore  time.Time `json:"not_before"`
-    NotAfter   time.Time `json:"not_after"`
-    SubjectCN  string `json:"subject_cn"`
-    SubjectAN  []string `json:"subject_an"`
-    IssuerCN   string `json:"issuer_cn"`
-    Fingerprint struct {
-        SHA256 string `json:"sha256"`
-    } `json:"fingerprint_hash"`
+	Host        string `json:"host"`
+	IP          string `json:"ip"`
+	Port        string `json:"port"`
+	ProbeStatus bool   `json:"probe_status"`
+
+	TLSVersion string `json:"tls_version"`
+	Cipher     string `json:"cipher"`
+
+	NotBefore string `json:"not_before"`
+	NotAfter  string `json:"not_after"`
+
+	SubjectDN string   `json:"subject_dn"`
+	SubjectCN string   `json:"subject_cn"`
+	SubjectAN []string `json:"subject_an"`
+
+	IssuerDN string `json:"issuer_dn"`
+	IssuerCN string `json:"issuer_cn"`
+
+	WildcardCertificate bool   `json:"wildcard_certificate"`
+	JARMHash            string `json:"jarm_hash"`
+
+	FingerprintHash struct {
+		SHA256 string `json:"sha256"`
+	} `json:"fingerprint_hash"`
 }
 
 // type PortData struct {
