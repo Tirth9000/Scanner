@@ -6,9 +6,9 @@ import (
 	"fmt"
 
 	"scanner-platform/scanner-engine/core"
+	"scanner-platform/scanner-engine/scanners/collection"
 	"scanner-platform/scanner-engine/scanners/discovery"
 	"scanner-platform/scanner-engine/scanners/filters"
-	"scanner-platform/scanner-engine/scanners/collection"
 )
 
 func main() {
@@ -37,24 +37,24 @@ func main() {
 	}
 
 	fmt.Println("Total Subdomains Found:", len(results.Data.([]string)))
-	
+
 	fmt.Println("Scanner 2 : Subdomain Filter")
-	
+
 	filter_registry := core.NewFilterScannerRegistry()
-	
+
 	filter_registry.RegisterFilterScanner(filters.NewDedupFilter())
 	filter_registry.RegisterFilterScanner(filters.NewDNSFilter())
 	filter_registry.RegisterFilterScanner(filters.NewHTTPFilter())
-	
+
 	// filter_registry.RegisterFilterScanner(filters.NEWDNSTEST()) // test dns
-	
+
 	filter_pipeline := core.NewFilterPipeline(filter_registry)
-	
+
 	filtered_results, err := filter_pipeline.ExecuteFilterScanners(ctx, results, domain_name)
 	if err != nil {
 		panic(err)
 	}
-	
+
 	fmt.Println("Total Filtered Subdomains Found:", filtered_results.Data)
 	fmt.Println(filtered_results)
 
@@ -91,13 +91,13 @@ func main() {
 	// fmt.Println(scanResult)
 	for _, r := range collection_pipeline_results.Data.([]interface{}) {
 
-	data, err := json.MarshalIndent(r, "", "  ")
-	if err != nil {
-		fmt.Println("error:", err)
-		continue
-	}
+		data, err := json.MarshalIndent(r, "", "  ")
+		if err != nil {
+			fmt.Println("error:", err)
+			continue
+		}
 
-	fmt.Println(string(data))
-}
+		fmt.Println(string(data))
+	}
 	// fmt.Println("Total Results Found:", collection_pipeline_results)
 }
