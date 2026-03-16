@@ -11,7 +11,7 @@ type ScanNotification struct {
 	ScanID string `json:"scan_id"`
 	Target string `json:"target"`
 	Event  string `json:"event"`
-	Data   string `json:"data"`
+	Status string `json:"status"`
 }
 
 type ScanResult struct {
