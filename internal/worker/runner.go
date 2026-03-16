@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"strconv"
 	"time"
 
 	"scanner-platform/internal/models"
@@ -40,7 +39,7 @@ func Run(ctx context.Context, job *models.ScanJob) (any, error) {
 		ScanID: job.ScanID,
 		Target: job.Target,
 		Event:  "subdomain_discovery_completed",
-		Data:   strconv.Itoa(len(results.Data.([]string))),
+		Status: "completed",
 	}
 	discovery_res, err := send_webhook_notification(discovery_payload)
 	if err != nil {
@@ -68,7 +67,7 @@ func Run(ctx context.Context, job *models.ScanJob) (any, error) {
 		ScanID: job.ScanID,
 		Target: job.Target,
 		Event:  "subdomain_filter_completed",
-		Data:   strconv.Itoa(len(filter_pipeline_results.Data.([]interface{}))),
+		Status: "completed",
 	}
 	filter_res, err := send_webhook_notification(filter_payload)
 	if err != nil {
@@ -97,7 +96,7 @@ func Run(ctx context.Context, job *models.ScanJob) (any, error) {
 		ScanID: job.ScanID,
 		Target: job.Target,
 		Event:  "subdomain_collection_completed",
-		Data:   strconv.Itoa(len(collection_data_results.Data.([]interface{}))),
+		Status: "completed",
 	}
 
 	collection_res, err := send_webhook_notification(collection_payload)
