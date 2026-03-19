@@ -16,6 +16,7 @@ func main() {
 	// domain_name := "vulnweb.com"
 	// domain_name := "officebeacon.com"
 	domain_name := "allianzcloud.com"
+	// domain_name := "flowzstaffing.com"
 
 	fmt.Println("Starting scanning for domain:", domain_name)
 	fmt.Println("Scanner 1 : Subdomain Discovery")
@@ -74,21 +75,6 @@ func main() {
 		panic(err)
 	}
 
-	// allDataResult := []any{}
-
-	// for _, r := range collection_pipeline_results {
-	// 	allDataResult = append(allDataResult, r.Data)
-	// }
-
-	// scanResult := core.ScanResult{
-	// 	ScanID :  "sample-scan-id",
-	// 	Target:    domain_name,
-	// 	Data:      allDataResult,
-	// 	Timestamp: time.Now(),
-	// }
-
-	// fmt.Println("Final Results:")
-	// fmt.Println(scanResult)
 	for _, r := range collection_pipeline_results.Data.([]interface{}) {
 
 		data, err := json.MarshalIndent(r, "", "  ")
@@ -99,5 +85,4 @@ func main() {
 
 		fmt.Println(string(data))
 	}
-	// fmt.Println("Total Results Found:", collection_pipeline_results)
 }
