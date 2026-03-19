@@ -155,3 +155,5 @@ go run cmd/scanner/main.go example.com
 
 Run this scanner **only on domains you own or have explicit permission to test**.  
 Unauthorized scanning may be illegal.
+
+## Liscense
