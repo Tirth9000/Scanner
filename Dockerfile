@@ -1,6 +1,14 @@
-FROM golang:1.25.3-alpine
+FROM golang:1.26.1-alpine
 
-RUN apk add --no-cache gcc musl-dev libpcap-dev git
+RUN apk add --no-cache \
+    git \
+    gcc \
+    g++ \
+    musl-dev \
+    libpcap-dev \
+    make \
+    pkgconfig \
+    libstdc++
 
 WORKDIR /app
 
