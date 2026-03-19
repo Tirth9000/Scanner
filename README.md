@@ -3,12 +3,14 @@
 This README explains **only what is required to run the scanner locally for testing**.  
 No build, no Docker, no configuration files — just install dependencies, clone the repo, and run the scanner.
 
+
 **Supported platforms:**
 
 - macOS
 - Windows
 
 ---
+
 
 ## Step 1: System Requirements
 
@@ -19,6 +21,7 @@ Ensure the following are installed:
 - Internet connection
 
 ---
+
 
 ## Step 2: Install Go
 
