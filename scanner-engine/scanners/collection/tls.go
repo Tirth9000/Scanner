@@ -152,7 +152,6 @@ func (f *TLSDataCollection) RunCollectionScanner(
 
 			for i := range ports {
 				if ports[i].Port == port {
-					fmt.Println(ports[i].Product, ports[i].Version)
 					ports[i].TLS = tlsData
 				}
 			}
