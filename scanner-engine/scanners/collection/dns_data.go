@@ -95,6 +95,11 @@ func (f *DNSDataOutput) RunCollectionScanner(
 		index[sub] = m
 	}
 
+	root := map[string]any{
+		"subdomain": target,
+	}
+
+	subSlice = append(subSlice, root)
 
 	scanner := bufio.NewScanner(stdout)
 	scanner.Buffer(make([]byte, 1024), 1024*1024)

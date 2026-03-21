@@ -116,21 +116,6 @@ func (f *TLSDataCollection) RunCollectionScanner(
 		portStr := out.Port
 		port, _ := strconv.Atoi(portStr)
 
-		// expired := false
-		// if v, ok := out["expired"].(bool); ok {
-		// 	expired = v
-		// }
-
-		// selfSigned := false
-		// if v, ok := out["self_signed"].(bool); ok {
-		// 	selfSigned = v
-		// }
-
-		// wildcard := false
-		// if v, ok := out["wildcard_certificate"].(bool); ok {
-		// 	wildcard = v
-		// }
-
 		notAfter, err := time.Parse(time.RFC3339, out.NotAfter)
 
 		expired := false
@@ -167,6 +152,7 @@ func (f *TLSDataCollection) RunCollectionScanner(
 
 			for i := range ports {
 				if ports[i].Port == port {
+					fmt.Println(ports[i].Product, ports[i].Version)
 					ports[i].TLS = tlsData
 				}
 			}
