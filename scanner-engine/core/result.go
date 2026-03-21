@@ -110,6 +110,8 @@ type PortData struct {
 	Port     int      `json:"port"`
 	Protocol string   `json:"protocol"`
 	Service  string   `json:"service,omitempty"`
+	Product  string   `json:"product,omitempty"`
+	Version  string   `json:"version,omitempty"`
 	TLS      *TLSData `json:"tls,omitempty"`
 }
 
@@ -163,3 +165,24 @@ type TLSXOutput struct {
 // 	Protocol   string      `json:"protocol"`
 // 	TLSDetails *TLSDetails `json:"tls_details,omitempty"`
 // }
+
+type NmapRun struct {
+	Hosts []Host `xml:"host"`
+}
+
+type Host struct {
+	Ports []Port `xml:"ports>port"`
+}
+
+type Port struct {
+	PortID   int    `xml:"portid,attr"`
+	Protocol string `xml:"protocol,attr"`
+	State    struct {
+		State string `xml:"state,attr"`
+	} `xml:"state"`
+	Service struct {
+		Name    string `xml:"name,attr"`
+		Product string `xml:"product,attr"`
+		Version string `xml:"version,attr"`
+	} `xml:"service"`
+}

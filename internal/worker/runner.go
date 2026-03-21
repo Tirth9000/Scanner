@@ -84,6 +84,7 @@ func Run(ctx context.Context, job *models.ScanJob) (any, error) {
 	collection_registry.RegisterCollectionScanner(collection.NewHTTPXFilterOutput())
 	collection_registry.RegisterCollectionScanner(collection.NewPortFilter())
 	collection_registry.RegisterCollectionScanner(collection.NewTLSDataCollection())
+	collection_registry.RegisterCollectionScanner(collection.NewMailSecurityDataCollection())
 
 	collection_pipeline := core.NewCollectionPipeline(collection_registry)
 

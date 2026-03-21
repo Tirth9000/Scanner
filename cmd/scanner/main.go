@@ -24,10 +24,10 @@ func main() {
 	registry := core.NewRegistry()
 
 	// registry.Register(discovery.NewDNSScanner())
-	registry.Register(discovery.NewCrtCTScanner())
-	registry.Register(discovery.NewCertSpotterCTScanner())
+	// registry.Register(discovery.NewCrtCTScanner())
+	// registry.Register(discovery.NewCertSpotterCTScanner())
 	registry.Register(discovery.NewSubdomainBruteforceScanner())
-	registry.Register(discovery.NewSubdomainSubFinderScanner())
+	// registry.Register(discovery.NewSubdomainSubFinderScanner())
 
 	pipeline := core.NewDiscoveryPipeline(registry)
 
@@ -64,9 +64,11 @@ func main() {
 	collection_registry := core.NewCollectionRegistry()
 
 	collection_registry.RegisterCollectionScanner(collection.NewDNSDataOutput())
-	collection_registry.RegisterCollectionScanner(collection.NewHTTPXFilterOutput())
-	collection_registry.RegisterCollectionScanner(collection.NewPortFilter())
-	collection_registry.RegisterCollectionScanner(collection.NewTLSDataCollection())
+	collection_registry.RegisterCollectionScanner(collection.NewMailSecurityDataCollection())
+	// collection_registry.RegisterCollectionScanner(collection.NewHTTPXFilterOutput())
+	// collection_registry.RegisterCollectionScanner(collection.NewPortFilter())
+	// collection_registry.RegisterCollectionScanner(collection.NewServiceDetectionScanner())
+	// collection_registry.RegisterCollectionScanner(collection.NewTLSDataCollection())
 
 	collection_pipeline := core.NewCollectionPipeline(collection_registry)
 
@@ -75,14 +77,49 @@ func main() {
 		panic(err)
 	}
 
-	for _, r := range collection_pipeline_results.Data.([]interface{}) {
+	// for _, r := range collection_pipeline_results.Data.([]interface{}) {
 
-		data, err := json.MarshalIndent(r, "", "  ")
+	// 	data, err := json.MarshalIndent(r, "", "  ")
+	// 	if err != nil {
+	// 		fmt.Println("error:", err)
+	// 		continue
+	// 	}
+
+	// 	fmt.Println(string(data))
+	// }
+
+	dataMap, ok := collection_pipeline_results.Data.(map[string]interface{})
+	if !ok {
+		fmt.Println("Invalid data format")
+		return
+	}
+
+	// -------- HOST --------
+	if host, ok := dataMap["host"]; ok {
+
+		hostJSON, err := json.MarshalIndent(host, "", "  ")
 		if err != nil {
-			fmt.Println("error:", err)
-			continue
+			fmt.Println("host marshal error:", err)
+		} else {
+			fmt.Println("===== HOST =====")
+			fmt.Println(string(hostJSON))
 		}
+	}
 
-		fmt.Println(string(data))
+	// -------- SUBDOMAINS --------
+	if subs, ok := dataMap["subdomains"].([]interface{}); ok {
+
+		fmt.Println("===== SUBDOMAINS =====")
+
+		for _, r := range subs {
+
+			data, err := json.MarshalIndent(r, "", "  ")
+			if err != nil {
+				fmt.Println("error:", err)
+				continue
+			}
+
+			fmt.Println(string(data))
+		}
 	}
 }
