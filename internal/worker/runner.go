@@ -105,7 +105,7 @@ func Run(ctx context.Context, job *models.ScanJob) (any, error) {
 		log.Printf("Failed to send webhook notification: %v", err)
 	}
 
-	fmt.Println("Total Results Found:", len(collection_data_results.Data.(map[string]interface{})), collection_res)
+	fmt.Println("Total Results Found:", len(collection_data_results.Data.([]interface{})), collection_res)
 
 	// data := []any{}
 
@@ -116,7 +116,7 @@ func Run(ctx context.Context, job *models.ScanJob) (any, error) {
 	scanResult := models.ScanResult{
 		ScanID:    job.ScanID,
 		Target:    job.Target,
-		Data:      collection_data_results.Data,
+		Data:      map[string]interface{}{"subdomains": collection_data_results.Data},
 		Timestamp: time.Now(),
 	}
 	fmt.Println("Final Results:", len(scanResult.Data.(map[string]interface{})["subdomains"].([]interface{})))
