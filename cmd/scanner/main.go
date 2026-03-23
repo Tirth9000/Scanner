@@ -24,10 +24,10 @@ func main() {
 	registry := core.NewRegistry()
 
 	// registry.Register(discovery.NewDNSScanner())
-	// registry.Register(discovery.NewCrtCTScanner())
-	// registry.Register(discovery.NewCertSpotterCTScanner())
+	registry.Register(discovery.NewCrtCTScanner())
+	registry.Register(discovery.NewCertSpotterCTScanner())
 	registry.Register(discovery.NewSubdomainBruteforceScanner())
-	// registry.Register(discovery.NewSubdomainSubFinderScanner())
+	registry.Register(discovery.NewSubdomainSubFinderScanner())
 
 	pipeline := core.NewDiscoveryPipeline(registry)
 
@@ -64,11 +64,11 @@ func main() {
 	collection_registry := core.NewCollectionRegistry()
 
 	collection_registry.RegisterCollectionScanner(collection.NewDNSDataOutput())
-	collection_registry.RegisterCollectionScanner(collection.NewMailSecurityDataCollection())
-	// collection_registry.RegisterCollectionScanner(collection.NewHTTPXFilterOutput())
-	// collection_registry.RegisterCollectionScanner(collection.NewPortFilter())
+	collection_registry.RegisterCollectionScanner(collection.NewHTTPXFilterOutput())
+	collection_registry.RegisterCollectionScanner(collection.NewPortFilter())
 	// collection_registry.RegisterCollectionScanner(collection.NewServiceDetectionScanner())
-	// collection_registry.RegisterCollectionScanner(collection.NewTLSDataCollection())
+	collection_registry.RegisterCollectionScanner(collection.NewTLSDataCollection())
+	collection_registry.RegisterCollectionScanner(collection.NewMailSecurityDataCollection())
 
 	collection_pipeline := core.NewCollectionPipeline(collection_registry)
 

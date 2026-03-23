@@ -115,6 +115,8 @@ func (d *DedupFilter) RunFilterScanner(
 		normalized_subdomains = append(normalized_subdomains, normalized)
 	}
 
+	normalized_subdomains = append(normalized_subdomains, domain)
+
     dedupted_subdomains := core.Result{
         Scanner: d.Name(),
         Category: d.Category(),
