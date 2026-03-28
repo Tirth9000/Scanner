@@ -14,8 +14,8 @@ import (
 func main() {
 	ctx := context.Background()
 	// domain_name := "vulnweb.com"
-	// domain_name := "officebeacon.com"
-	domain_name := "allianzcloud.com"
+	domain_name := "officebeacon.com"
+	// domain_name := "allianzcloud.com"
 	// domain_name := "flowzstaffing.com"
 
 	fmt.Println("Starting scanning for domain:", domain_name)
@@ -45,7 +45,7 @@ func main() {
 
 	filter_registry.RegisterFilterScanner(filters.NewDedupFilter())
 	filter_registry.RegisterFilterScanner(filters.NewDNSFilter())
-	filter_registry.RegisterFilterScanner(filters.NewHTTPFilter())
+	// filter_registry.RegisterFilterScanner(filters.NewHTTPFilter())
 
 	// filter_registry.RegisterFilterScanner(filters.NEWDNSTEST()) // test dns
 
@@ -66,7 +66,7 @@ func main() {
 	collection_registry.RegisterCollectionScanner(collection.NewDNSDataOutput())
 	collection_registry.RegisterCollectionScanner(collection.NewHTTPXFilterOutput())
 	collection_registry.RegisterCollectionScanner(collection.NewPortFilter())
-	// collection_registry.RegisterCollectionScanner(collection.NewServiceDetectionScanner())
+	collection_registry.RegisterCollectionScanner(collection.NewServiceDetectionScanner())
 	collection_registry.RegisterCollectionScanner(collection.NewTLSDataCollection())
 	collection_registry.RegisterCollectionScanner(collection.NewMailSecurityDataCollection())
 

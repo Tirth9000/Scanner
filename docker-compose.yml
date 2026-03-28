@@ -1,13 +1,31 @@
 services:
-  scanner:
+  worker-main:
     build: 
       context: .
       dockerfile: Dockerfile
-    container_name: scanner-worker
+    container_name: scanner-worker-main
     networks:
       - scanner-network
     environment:
+      - WORKER_TYPE=main
       - REDIS_ADDR=redis:6379
+    deploy:
+      replicas: 1
+    volumes:
+      - .:/app
+
+  worker-fix:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: scanner-worker-fix
+    networks:
+      - scanner-network
+    environment:
+      - WORKER_TYPE=fix
+      - REDIS_ADDR=redis:6379
+    deploy:
+      replicas: 1
     volumes:
       - .:/app
   

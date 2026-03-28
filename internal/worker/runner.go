@@ -11,9 +11,28 @@ import (
 	"scanner-platform/scanner-engine/scanners/collection"
 	"scanner-platform/scanner-engine/scanners/discovery"
 	"scanner-platform/scanner-engine/scanners/filters"
+
+	"scanner-platform/scanner-engine/fix"
 )
 
-func Run(ctx context.Context, job *models.ScanJob) (any, error) {
+func RunFix(ctx context.Context, job *models.FixScanJob) (models.FixScanResult, error) {
+	null := models.FixScanResult{}
+
+	log.Printf("Fix started: %s (%s)", job.ScanID, job.Domain)
+	result := models.FixScanResult{}
+	var err error
+
+	if job.FixType == "port" {
+		result, err = fix.PortFix(ctx, job)
+		if err != nil {
+			return null, err
+		}
+	}
+	return result, nil
+}
+
+
+func RunMain(ctx context.Context, job *models.ScanJob) (any, error) {
 
 	log.Printf("Scan started: %s (%s)", job.ScanID, job.Target)
 
