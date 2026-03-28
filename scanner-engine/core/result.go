@@ -171,10 +171,10 @@ type NmapRun struct {
 }
 
 type Host struct {
-	Ports []Port `xml:"ports>port"`
+	Ports []NmapPortData `xml:"ports>port"`
 }
 
-type Port struct {
+type NmapPortData struct {
 	PortID   int    `xml:"portid,attr"`
 	Protocol string `xml:"protocol,attr"`
 	State    struct {
