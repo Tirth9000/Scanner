@@ -57,12 +57,11 @@ func (s *ServiceDetectionScanner) RunCollectionScanner(
 			"-T4",
 			"-Pn",
 			"--max-retries", "1",
-			"--host-timeout", "15s",
 			"-oX", "-", // XML output
 			host,
 		)
 
-		out, err := cmd.Output()
+		out, err := cmd.CombinedOutput()
 		if err != nil {
 			fmt.Println("nmap error:", err)
 			continue
@@ -76,7 +75,7 @@ func (s *ServiceDetectionScanner) RunCollectionScanner(
 		}
 
 		// Map port → service
-		serviceMap := make(map[int]core.Port)
+		serviceMap := make(map[int]core.NmapPortData)
 
 		for _, h := range result.Hosts {
 			for _, p := range h.Ports {
@@ -105,6 +104,7 @@ func (s *ServiceDetectionScanner) RunCollectionScanner(
 					ports[i].Version = svc.Service.Version
 				}
 			}
+			// fmt.Println(ports[i])
 		}
 
 		m["port_collection"] = ports
