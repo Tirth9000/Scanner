@@ -18,11 +18,11 @@ func NewPortFilter() *PortFilter {
 }
 
 func (f *PortFilter) Name() string {
-	return "PortFilter"
+	return "Port Collection"
 }
 
 func (f *PortFilter) Category() string {
-	return "FilterScanner"
+	return "Collection Pipeline"
 }
 
 func (f *PortFilter) RunCollectionScanner(

@@ -15,7 +15,7 @@ import (
 	"scanner-platform/scanner-engine/fix"
 )
 
-func RunFix(ctx context.Context, job *models.FixScanJob) (models.FixScanResult, error) {
+func RunFix(ctx context.Context, job *models.FixScanJob) (any, error) {
 	null := models.FixScanResult{}
 
 	log.Printf("Fix started: %s (%s)", job.ScanID, job.Domain)
@@ -27,8 +27,9 @@ func RunFix(ctx context.Context, job *models.FixScanJob) (models.FixScanResult, 
 		if err != nil {
 			return null, err
 		}
-	}
-	return result, nil
+	}	
+	res, err := send_fix_result_webhook(result)
+	return res, nil
 }
 
 
