@@ -14,8 +14,8 @@ import (
 func main() {
 	ctx := context.Background()
 	// domain_name := "vulnweb.com"
-	// domain_name := "officebeacon.com"
-	domain_name := "allianzcloud.com"
+	domain_name := "officebeacon.com"
+	// domain_name := "allianzcloud.com"
 	// domain_name := "flowzstaffing.com"
 
 	fmt.Println("Starting scanning for domain:", domain_name)
@@ -37,7 +37,7 @@ func main() {
 		panic(err)
 	}
 
-	fmt.Println("Total Subdomains Found:", results.Data.([]string))
+	fmt.Println("Total Subdomains Found:", len(results.Data.([]string)))
 
 	fmt.Println("Scanner 2 : Subdomain Filter")
 
@@ -56,8 +56,7 @@ func main() {
 		panic(err)
 	}
 
-	fmt.Println("Total Filtered Subdomains Found:", filtered_results.Data)
-	fmt.Println(filtered_results)
+	fmt.Println("Total Filtered Subdomains Found:", len(filtered_results.Data.([]interface{})))
 
 	fmt.Println("Scanner 3 : Data Collection")
 
