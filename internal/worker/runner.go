@@ -23,10 +23,12 @@ func RunFix(ctx context.Context, job *models.FixScanJob) (any, error) {
 	var err error
 
 	if job.FixType == "port" {
+		fmt.Println("Fix Port-Scanner Running...")
 		result, err = fix.PortFix(ctx, job)
 		if err != nil {
 			return null, err
 		}
+		fmt.Println("Fix Port-Scanner Completed.")
 	}	
 	res, err := send_fix_result_webhook(result)
 	return res, nil
