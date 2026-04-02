@@ -12,7 +12,7 @@ import (
 
 func PortFix(ctx context.Context, job *models.FixScanJob) (models.FixScanResult, error){
 	null := models.FixScanResult{}
-	port := job.Data.(int)
+	port := job.Data.(map[string]int)["port"]
 
 	cmd := exec.CommandContext(ctx, "naabu", 
 		"-host", job.Domain,
