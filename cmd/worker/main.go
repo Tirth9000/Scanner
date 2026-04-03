@@ -28,22 +28,25 @@ func main() {
 
 	for {
 		if scan_type == "fix" {
-			log.Println("Running fix worker")
+			fmt.Println("Running fix worker")
 
 			job, err := fq.PopFixQueue(ctx)
 			if err != nil {
 				log.Println("Queue error:", err)
+				continue
 			}
 
 			result, err := worker.RunFix(ctx, job)
 			if err != nil {
 				log.Println("Worker error:", err)
+				continue
 			}
 
 			fmt.Printf("Webhook response: %v\n", result)
-			
+
 		} else {
 
+			fmt.Println("Running main worker")
 			job, err := mq.PopMainQueue(ctx)
 			if err != nil {
 				log.Println("Queue error:", err)
