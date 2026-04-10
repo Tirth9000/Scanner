@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"time"
 
 	"scanner-platform/internal/queue"
 	"scanner-platform/internal/worker"
@@ -33,6 +34,7 @@ func main() {
 			job, err := fq.PopFixQueue(ctx)
 			if err != nil {
 				log.Println("Queue error:", err)
+				time.Sleep(10 * time.Second)
 				continue
 			}
 
@@ -50,6 +52,7 @@ func main() {
 			job, err := mq.PopMainQueue(ctx)
 			if err != nil {
 				log.Println("Queue error:", err)
+				time.Sleep(10 * time.Second)
 				continue
 			}
 
